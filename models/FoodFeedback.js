@@ -23,11 +23,7 @@ const foodFeedbackSchema = new mongoose.Schema({
   comment: { 
     type: String, 
     required: true 
-  }, 
-  created_at: { 
-    type: Date, 
-    default: Date.now 
-  } 
-}); 
+  }
+}, {timestamps:true}); 
  
 export default mongoose.model('FoodFeedback', foodFeedbackSchema); 

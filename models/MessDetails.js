@@ -22,15 +22,7 @@ const messDetailsSchema = new mongoose.Schema({
     city: { type: String, required: true }, 
     state: { type: String, required: true }, 
     pincode: { type: String, required: true } 
-  }, 
-  created_at: { 
-    type: Date, 
-    default: Date.now 
-  }, 
-  updated_at: { 
-    type: Date, 
-    default: Date.now 
-  } 
-}); 
+  }
+}, {timestamps:true}); 
  
 export default mongoose.model('MessDetails', messDetailsSchema); 

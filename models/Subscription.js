@@ -26,15 +26,7 @@ const subscriptionSchema = new mongoose.Schema({
   veg_only: { 
     type: Boolean, 
     required: true 
-  }, 
-  created_at: { 
-    type: Date, 
-    default: Date.now 
-  }, 
-  updated_at: { 
-    type: Date, 
-    default: Date.now 
   } 
-}); 
+}, {timestamps:true}); 
  
 export default mongoose.model('Subscription', subscriptionSchema); 

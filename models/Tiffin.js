@@ -32,15 +32,7 @@ const tiffinSchema = new mongoose.Schema({
   maximum_price: { 
     type: Number, 
     required: true 
-  }, 
-  created_at: { 
-    type: Date, 
-    default: Date.now 
-  }, 
-  updated_at: { 
-    type: Date, 
-    default: Date.now 
-  } 
-}); 
+  }
+}, {timestamps:true}); 
  
 export default mongoose.model('Tiffin', tiffinSchema); 

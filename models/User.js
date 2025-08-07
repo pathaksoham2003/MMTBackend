@@ -3,7 +3,6 @@ import mongoose from "../utils/db.js"
 const userSchema = new mongoose.Schema({ 
   name: { 
     type: String, 
-    required: true 
   }, 
   avatar: { 
     type: String // Link to S3 or image URL 
@@ -35,15 +34,7 @@ const userSchema = new mongoose.Schema({
   is_active: { 
     type: Boolean, 
     default: true 
-  }, 
-  created_at: { 
-    type: Date, 
-    default: Date.now 
-  }, 
-  updated_at: { 
-    type: Date, 
-    default: Date.now 
-  } 
-}); 
+  }
+}, {timestamps:true}); 
  
 export default mongoose.model('User', userSchema); 

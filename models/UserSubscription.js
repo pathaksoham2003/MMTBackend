@@ -56,15 +56,7 @@ const userSubscriptionSchema = new mongoose.Schema({
   is_active: { 
     type: Boolean, 
     default: true 
-  }, 
-  created_at: { 
-    type: Date, 
-    default: Date.now 
-  }, 
-  updated_at: { 
-    type: Date, 
-    default: Date.now 
-  } 
-}); 
+  }
+}, {timestamps:true}); 
  
 export default mongoose.model('UserSubscription', userSubscriptionSchema); 

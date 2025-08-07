@@ -24,10 +24,6 @@ const deliveryFeedbackSchema = new mongoose.Schema({
     type: String, 
     required: true 
   }, 
-  created_at: { 
-    type: Date, 
-    default: Date.now 
-  } 
-}); 
+}, {timestamps:true}); 
  
 export default mongoose.model('DeliveryFeedback', deliveryFeedbackSchema); 
