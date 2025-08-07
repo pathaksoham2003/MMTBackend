@@ -1,0 +1,4 @@
+phone,mess_photos,menu_items,address_line1,address_line2,city,state,pincode
+9876543217,"https://example.com/mess1_1.jpg,https://example.com/mess1_2.jpg","Dal Rice,Roti,Sabzi,Pickle","258 Curry Lane","","Ahmedabad","Gujarat","380001" 
+9876543218,"https://example.com/mess2_1.jpg,https://example.com/mess2_2.jpg","Rajma Chawal,Naan,Paneer Curry,Raita","369 Spice Street","Shop 1","Jaipur","Rajasthan","302001" 
+9876543219,"https://example.com/mess3_1.jpg,https://example.com/mess3_2.jpg","Chole Bhature,Paratha,Aloo Gobi,Lassi","741 Food Plaza","Unit 5","Lucknow","Uttar Pradesh","226001" 

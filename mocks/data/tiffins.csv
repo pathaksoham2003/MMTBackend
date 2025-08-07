@@ -1,0 +1,9 @@
+mess_phone,quantity,unit,nutrition,protein,type_name,is_veg,photos,maximum_price
+9876543217,1,"box","Balanced meal with carbs and proteins","15g","Special",true,"https://example.com/tiffin1.jpg,https://example.com/tiffin1_2.jpg",180.00 
+9876543218,1,"box","Rich in fiber and vitamins","12g","General",true,"https://example.com/tiffin2.jpg",150.00 
+9876543219,1,"box","High protein content","20g","Special",false,"https://example.com/tiffin3.jpg,https://example.com/tiffin3_2.jpg",200.00 
+9876543217,1,"box","Light and healthy","10g","General",true,"https://example.com/tiffin4.jpg",120.00 
+9876543218,1,"box","Nutritious and filling","18g","Special",false,"https://example.com/tiffin5.jpg",190.00 
+9876543219,1,"box","Traditional homestyle","14g","General",true,"https://example.com/tiffin6.jpg",140.00 
+9876543217,1,"box","Protein rich meal","22g","Special",false,"https://example.com/tiffin7.jpg,https://example.com/tiffin7_2.jpg",220.00 
+9876543218,1,"box","Balanced nutrition","16g","General",true,"https://example.com/tiffin8.jpg",160.00 

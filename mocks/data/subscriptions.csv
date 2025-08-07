@@ -1,0 +1,7 @@
+day_slot_type,price,time_slot_type,buffer_days,provided_tiffins,veg_only
+Afternoon,150.00,AFTERNOON,2,30,true 
+Evening,180.00,EVENING,3,30,false 
+Afternoon,120.00,AFTERNOON,1,15,true 
+Evening,200.00,EVENING,2,30,false 
+Afternoon,90.00,AFTERNOON,1,7,true 
+Evening,250.00,EVENING,3,30,false 
