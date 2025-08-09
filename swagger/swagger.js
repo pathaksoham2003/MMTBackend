@@ -9,7 +9,7 @@ const options = {
       description: 'User Authentication API with JWT and Swagger',
     },
   },
-  apis: ['./routes/*.js'],
+  apis: ['./routes/*.js','./docs/*.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

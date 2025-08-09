@@ -16,41 +16,41 @@
  */
 
 export default [
-  {
-    name: "TaskOne",
-    schedule: {
-      minute: "1",
-      hour: "12",
-      dayOfMonth: "*",
-      month: "*",
-      dayOfWeek: "*",
-    },
-    taskPath: "../schedulers/orderCreation.js",
-    functionName: "taskOne",
-  },
-  {
-    name: "TaskTwo",
-    schedule: {
-      minute: "30",
-      hour: "15",
-      dayOfMonth: "*",
-      month: "*",
-      dayOfWeek: "1", // Every Monday
-    },
-    taskPath: "../schedulers/orderCreation.js",
-    functionName: "taskTwo",
-  },
-  {
-    name: "TaskEvery10Sec",
-    schedule: {
-      second: "*/10",
-      minute: "*",
-      hour: "*",
-      dayOfMonth: "*",
-      month: "*",
-      dayOfWeek: "*",
-    },
-    taskPath: "../schedulers/orderCreation.js",
-    functionName: "taskOne",
-  },
+  // {
+  //   name: "TaskOne",
+  //   schedule: {
+  //     minute: "1",
+  //     hour: "12",
+  //     dayOfMonth: "*",
+  //     month: "*",
+  //     dayOfWeek: "*",
+  //   },
+  //   taskPath: "../schedulers/orderCreation.js",
+  //   functionName: "taskOne",
+  // },
+  // {
+  //   name: "TaskTwo",
+  //   schedule: {
+  //     minute: "30",
+  //     hour: "15",
+  //     dayOfMonth: "*",
+  //     month: "*",
+  //     dayOfWeek: "1", // Every Monday
+  //   },
+  //   taskPath: "../schedulers/orderCreation.js",
+  //   functionName: "taskTwo",
+  // },
+  // {
+  //   name: "TaskEvery10Sec",
+  //   schedule: {
+  //     second: "*/10",
+  //     minute: "*",
+  //     hour: "*",
+  //     dayOfMonth: "*",
+  //     month: "*",
+  //     dayOfWeek: "*",
+  //   },
+  //   taskPath: "../schedulers/orderCreation.js",
+  //   functionName: "taskOne",
+  // },
 ];

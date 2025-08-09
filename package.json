@@ -22,8 +22,10 @@
     "mongoose": "^8.17.1",
     "mongoose-sequence": "^6.0.1",
     "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "twilio": "^5.8.0",
     "xlsx": "^0.18.5"
   }
 }

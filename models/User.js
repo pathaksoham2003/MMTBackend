@@ -16,7 +16,10 @@ const userSchema = new mongoose.Schema({
     type: Number, 
     required: true, 
     unique: true 
-  }, 
+  },
+  email: {
+    type: String,
+  },
   mess_id: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'MessDetails' 
@@ -36,5 +39,11 @@ const userSchema = new mongoose.Schema({
     default: true 
   }
 }, {timestamps:true}); 
- 
-export default mongoose.model('User', userSchema); 
+
+// Index for better query performance
+userSchema.index({ phone: 1 });
+userSchema.index({ email: 1 });
+userSchema.index({ role: 1 });
+userSchema.index({ is_active: 1 });
+
+export default mongoose.model('User', userSchema);
