@@ -43,7 +43,6 @@ const sendOTPViaSMS = async (phone, otp) => {
   }
 };
 
-// Send OTP via Gmail SMTP
 const sendOTPViaEmail = async (email, otp) => {
   try {
     const mailOptions = {
@@ -75,7 +74,6 @@ const sendOTPViaEmail = async (email, otp) => {
   }
 };
 
-// Send OTP based on configuration
 const sendOTP = async (contact, otp, isEmail = false) => {
   if (process.env.USE_TWILLIO_SMS === "true") {
     return await sendOTPViaSMS(contact, otp);
@@ -84,13 +82,11 @@ const sendOTP = async (contact, otp, isEmail = false) => {
   }
 };
 
-// Create user with phone number and send OTP
 export const createUser = async (req, res) => {
   try {
     const {phone, role, email} = req.body;
     const useTwilioSMS = process.env.USE_TWILLIO_SMS === "true";
 
-    // Validate required fields
     if (!phone || !role) {
       return res.status(400).json({
         success: false,
@@ -98,7 +94,6 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Validate email if SMS is disabled
     if (!useTwilioSMS && !email) {
       return res.status(400).json({
         success: false,
@@ -106,7 +101,6 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Validate email format if provided
     if (!useTwilioSMS && email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
@@ -117,7 +111,6 @@ export const createUser = async (req, res) => {
       }
     }
 
-    // Validate role
     const validRoles = ["DELIVERY", "MESS_OWNER", "CUSTOMER", "SUPER_ADMIN"];
     if (!validRoles.includes(role)) {
       return res.status(400).json({
@@ -126,7 +119,6 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Validate phone number (basic validation for 10 digits)
     if (!/^\d{10}$/.test(phone.toString())) {
       return res.status(400).json({
         success: false,
@@ -134,7 +126,6 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Check if user already exists (by phone or email)
     const existingQuery = {phone};
     if (!useTwilioSMS && email) {
       existingQuery.$or = [{phone}];
@@ -150,10 +141,8 @@ export const createUser = async (req, res) => {
       });
     }
 
-    // Generate OTP
     const otp = generateOTP();
 
-    // Create user with phone and OTP
     const userData = {
       phone,
       role,
@@ -161,26 +150,21 @@ export const createUser = async (req, res) => {
       is_active: true,
     };
 
-    // Add email if SMS is disabled
     if (!useTwilioSMS && email) {
       userData.email = email;
     }
 
-    // For roles that don't need mess_id, don't include it
     if (role !== "CUSTOMER" && role !== "SUPER_ADMIN") {
-      // DELIVERY and MESS_OWNER will need to be activated after mess assignment
       userData.is_active = false;
     }
 
     const newUser = new User(userData);
     await newUser.save();
 
-    // Send OTP via SMS or Email
     const contactInfo = useTwilioSMS ? phone : email;
     const otpResult = await sendOTP(contactInfo, otp, !useTwilioSMS);
 
     if (!otpResult.success) {
-      // If OTP sending fails, delete the created user
       await User.findByIdAndDelete(newUser._id);
       return res.status(500).json({
         success: false,
@@ -220,7 +204,6 @@ export const createUser = async (req, res) => {
   }
 };
 
-// Verify OTP
 export const verifyOTP = async (req, res) => {
   try {
     const {phone, otp, email} = req.body;
@@ -240,7 +223,6 @@ export const verifyOTP = async (req, res) => {
       });
     }
 
-    // Find user by phone (and email if SMS is disabled)
     const query = {phone};
     if (!useTwilioSMS && email) {
       query.email = email;
@@ -254,7 +236,6 @@ export const verifyOTP = async (req, res) => {
       });
     }
 
-    // Verify OTP
     if (user.otp !== parseInt(otp)) {
       return res.status(400).json({
         success: false,
@@ -262,7 +243,6 @@ export const verifyOTP = async (req, res) => {
       });
     }
 
-    // Clear OTP after successful verification
     user.otp = undefined;
     await user.save();
 
@@ -292,13 +272,11 @@ export const verifyOTP = async (req, res) => {
   }
 };
 
-// Complete user profile
 export const completeProfile = async (req, res) => {
   try {
     const {userId} = req.params;
     const {name, avatar, addresses, mess_id} = req.body;
 
-    // Validate ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({
         success: false,
@@ -306,7 +284,6 @@ export const completeProfile = async (req, res) => {
       });
     }
 
-    // Find user
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({
@@ -315,7 +292,6 @@ export const completeProfile = async (req, res) => {
       });
     }
 
-    // Check if OTP was verified (OTP should be undefined after verification)
     if (user.otp !== undefined) {
       return res.status(400).json({
         success: false,
@@ -323,7 +299,6 @@ export const completeProfile = async (req, res) => {
       });
     }
 
-    // Validate addresses format if provided
     if (addresses && Array.isArray(addresses)) {
       for (const address of addresses) {
         if (
@@ -340,13 +315,11 @@ export const completeProfile = async (req, res) => {
       }
     }
 
-    // Update user profile
     const updateData = {};
     if (name) updateData.name = name;
     if (avatar) updateData.avatar = avatar;
     if (addresses) updateData.addresses = addresses;
 
-    // Handle mess_id based on role
     if (mess_id) {
       if (user.role === "CUSTOMER" || user.role === "SUPER_ADMIN") {
         return res.status(400).json({
@@ -355,7 +328,6 @@ export const completeProfile = async (req, res) => {
         });
       }
 
-      // Validate mess_id is a valid ObjectId
       if (!mongoose.Types.ObjectId.isValid(mess_id)) {
         return res.status(400).json({
           success: false,
@@ -364,7 +336,7 @@ export const completeProfile = async (req, res) => {
       }
 
       updateData.mess_id = mess_id;
-      updateData.is_active = true; // Activate user after mess assignment
+      updateData.is_active = true; 
     }
 
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
@@ -387,7 +359,6 @@ export const completeProfile = async (req, res) => {
   }
 };
 
-// Resend OTP
 export const resendOTP = async (req, res) => {
   try {
     const {phone, email} = req.body;
@@ -407,7 +378,6 @@ export const resendOTP = async (req, res) => {
       });
     }
 
-    // Find user by phone (and email if SMS is disabled)
     const query = {phone};
     if (!useTwilioSMS && email) {
       query.email = email;
@@ -421,7 +391,6 @@ export const resendOTP = async (req, res) => {
       });
     }
 
-    // Check if user is already verified
     if (user.otp === undefined) {
       return res.status(400).json({
         success: false,
@@ -429,12 +398,10 @@ export const resendOTP = async (req, res) => {
       });
     }
 
-    // Generate new OTP
     const newOtp = generateOTP();
     user.otp = newOtp;
     await user.save();
 
-    // Send OTP via SMS or Email
     const contactInfo = useTwilioSMS ? phone : email;
     const otpResult = await sendOTP(contactInfo, newOtp, !useTwilioSMS);
 
@@ -473,7 +440,6 @@ export const resendOTP = async (req, res) => {
   }
 };
 
-// Get user profile
 export const getUserProfile = async (req, res) => {
   try {
     const {userId} = req.params;
@@ -508,7 +474,6 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-// Get all users (for admin purposes)
 export const getAllUsers = async (req, res) => {
   try {
     const {page = 1, limit = 10, role, is_active} = req.query;
@@ -545,7 +510,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// Update user status (activate/deactivate)
 export const updateUserStatus = async (req, res) => {
   try {
     const {userId} = req.params;
