@@ -20,10 +20,6 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
   },
-  mess_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "MessDetails",
-  },
   otp: {
     type: Number,
   },

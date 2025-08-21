@@ -76,20 +76,72 @@
  *     AddAddressRequest:
  *       type: object
  *       required:
- *         - full_address
+ *         - line1
  *         - coordinates
  *       properties:
- *         full_address:
+ *         line1:
  *           type: string
- *           description: Complete address of the user
- *           example: "123 Main Street, Springfield, IL 62704"
+ *           description: First line of the address
+ *           example: "123 Main Street"
+ *         line2:
+ *           type: string
+ *           description: Second line of the address (optional)
+ *           example: "Apartment 4B"
+ *         instructions:
+ *           type: string
+ *           description: Additional instructions to reach the address
+ *           example: "Near the central park"
+ *         tag:
+ *           type: string
+ *           enum: [HOME, WORK, OTHERS]
+ *           description: Tag for the address type
+ *           example: "HOME"
  *         coordinates:
  *           type: array
  *           items:
  *             type: number
- *           description: [Longitude, Latitude]
+ *           description: Longitude and latitude [lon, lat]
  *           example: [-89.6500, 39.7833]
+ *
+ *     CreateUserRequest:
+ *       type: object
+ *       required:
+ *         - phone
+ *         - role
+ *       properties:
+ *         phone:
+ *           type: string
+ *           description: 10-digit phone number
+ *           example: "9876543210"
+ *         role:
+ *           type: string
+ *           enum: [DELIVERY, MESS_OWNER, CUSTOMER, SUPER_ADMIN]
+ *           example: "CUSTOMER"
+ *         email:
+ *           type: string
+ *           description: Email address (required when USE_TWILLIO_SMS=false)
+ *           example: "user@example.com"
+ *
+ *     VerifyOTPRequest:
+ *       type: object
+ *       required:
+ *         - phone
+ *         - otp
+ *       properties:
+ *         phone:
+ *           type: string
+ *           description: 10-digit phone number
+ *           example: "9876543210"
+ *         otp:
+ *           type: string
+ *           description: 6-digit OTP
+ *           example: "123456"
+ *         email:
+ *           type: string
+ *           description: Email address (required when USE_TWILLIO_SMS=false)
+ *           example: "user@example.com"
  */
+
 /**
  * @swagger
  * tags:
@@ -135,7 +187,6 @@
  *       404:
  *         description: User not found
  */
-
 /**
  * @swagger
  * /api/users/add-address/{userId}:
@@ -157,7 +208,7 @@
  *             $ref: '#/components/schemas/AddAddressRequest'
  *     responses:
  *       200:
- *         description: User address updated successfully
+ *         description: User address added/updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -165,12 +216,49 @@
  *               properties:
  *                 success:
  *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
+ *                   example: "Address added/updated successfully"
  *                 data:
- *                   $ref: '#/components/schemas/User'
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       description: Address ID
+ *                     user_id:
+ *                       type: string
+ *                       description: User ID
+ *                     line1:
+ *                       type: string
+ *                     line2:
+ *                       type: string
+ *                     instructions:
+ *                       type: string
+ *                     tag:
+ *                       type: string
+ *                     full_address:
+ *                       type: string
+ *                       description: Generated full address combining line1, line2, and instructions
+ *                     location:
+ *                       type: object
+ *                       properties:
+ *                         type:
+ *                           type: string
+ *                           example: "Point"
+ *                         coordinates:
+ *                           type: array
+ *                           items:
+ *                             type: number
+ *                           description: [Longitude, Latitude]
+ *                     createdAt:
+ *                       type: string
+ *                       format: date-time
+ *                     updatedAt:
+ *                       type: string
+ *                       format: date-time
  *       400:
- *         description: Invalid input or missing coordinates
+ *         description: Invalid input or missing required fields (line1 or coordinates)
  *       404:
  *         description: User not found
  */

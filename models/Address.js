@@ -7,9 +7,19 @@ const addressSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    full_address: {
+    line1: {
       type: String,
       required: true,
+    },
+    line2: {
+      type: String,
+    },
+    instructions: {
+      type: String,
+    },
+    tag: {
+      type: String,
+      default: "HOME",
     },
     location: {
       type: {
@@ -27,10 +37,10 @@ const addressSchema = new mongoose.Schema(
       default: true,
     },
   },
-  { timestamps: true }
+  {timestamps: true}
 );
 
 // Geo index for location queries
-addressSchema.index({ location: "2dsphere" });
+addressSchema.index({location: "2dsphere"});
 
 export default mongoose.model("Address", addressSchema);

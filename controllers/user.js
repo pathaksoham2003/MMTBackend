@@ -275,8 +275,8 @@ export const verifyOTP = async (req, res) => {
 
 export const addName = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const { name } = req.body;
+    const {userId} = req.params;
+    const {name} = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({
@@ -309,8 +309,8 @@ export const addName = async (req, res) => {
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name },
-      { new: true, select: "-otp" }
+      {name},
+      {new: true, select: "-otp"}
     );
 
     res.status(200).json({
@@ -327,11 +327,10 @@ export const addName = async (req, res) => {
     });
   }
 };
-
 export const addAddress = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const { full_address, coordinates } = req.body;
+    const {userId} = req.params;
+    const {line1, line2, instructions, tag, coordinates} = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({
@@ -355,33 +354,48 @@ export const addAddress = async (req, res) => {
       });
     }
 
-    if (!full_address || !coordinates || !Array.isArray(coordinates) || coordinates.length !== 2) {
+    if (
+      !line1 ||
+      !coordinates ||
+      !Array.isArray(coordinates) ||
+      coordinates.length !== 2
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Full address and valid coordinates [longitude, latitude] are required",
+        message:
+          "line1 and valid coordinates [longitude, latitude] are required",
       });
     }
 
+    // Generate full_address from provided parts (optional)
+    const full_address = [line1, line2, instructions]
+      .filter(Boolean)
+      .join(", ");
+
     const address = await Address.findOneAndUpdate(
-      { user_id: userId },
+      {user_id: userId},
       {
         user_id: userId,
+        line1,
+        line2,
+        instructions,
+        tag,
         full_address,
         location: {
           type: "Point",
           coordinates, // [lon, lat]
         },
       },
-      { upsert: true, new: true }
+      {upsert: true, new: true}
     );
 
     res.status(200).json({
       success: true,
-      message: "Address updated successfully",
+      message: "Address added/updated successfully",
       data: address,
     });
   } catch (error) {
-    console.error("Error updating address:", error);
+    console.error("Error adding/updating address:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -482,7 +496,7 @@ export const getUserProfile = async (req, res) => {
       });
     }
 
-    const user = await User.findById(userId).select("-otp").populate("mess_id");
+    const user = await User.findById(userId).select("-otp");
 
     if (!user) {
       return res.status(404).json({
@@ -515,7 +529,6 @@ export const getAllUsers = async (req, res) => {
 
     const users = await User.find(query)
       .select("-otp")
-      .populate("mess_id")
       .limit(limit * 1)
       .skip((page - 1) * limit)
       .sort({createdAt: -1});
@@ -564,7 +577,7 @@ export const updateUserStatus = async (req, res) => {
       userId,
       {is_active},
       {new: true, select: "-otp"}
-    ).populate("mess_id");
+    );
 
     if (!user) {
       return res.status(404).json({

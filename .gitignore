@@ -61,3 +61,5 @@ dump/
 .idea/
 *.tgz
 package-lock.json
+
+uploads

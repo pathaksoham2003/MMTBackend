@@ -9,9 +9,6 @@ const messDetailsSchema = new mongoose.Schema({
   mess_photos: [{ 
     type: String // Array of S3 links 
   }], 
-  menu: { 
-    special_array_of_menu_items_offered: [String] 
-  }, 
   phone: { 
     type: String, 
     required: true 

@@ -6,7 +6,13 @@ import swaggerUI from "swagger-ui-express";
 import swaggerSpec from "./swagger/swagger.js";
 
 import userRoute from "./routes/user.js";
+import userUserRoute from "./routes/messUser.js";
 import locationRoute from "./routes/location.js";
+import messRoute from "./routes/mess.js";
+import timeSlotRoute from "./routes/timeSlots.js";
+import tiffinTypeRoute from "./routes/tiffinType.js";
+import subscriptionTypeRoute from "./routes/subscriptionType.js";
+import subscriptionsRoute from "./routes/subscriptions.js";
 import "./schedulers/index.js";
 
 dotenv.config();
@@ -21,7 +27,13 @@ app.get("/", (req, res) => res.send("MMT Server Running..."));
 
 // APIS
 app.use("/api/users/",userRoute)
+app.use("/api/users/",userUserRoute)
 app.use("/api/locations/",locationRoute)
+app.use("/api/mess/",messRoute)
+app.use("/api/time-slots/",timeSlotRoute)
+app.use("/api/tiffin-types",tiffinTypeRoute)
+app.use("/api/subscription-types",subscriptionTypeRoute)
+app.use("/api/subscriptions",subscriptionsRoute)
 // schedulers
 
 
