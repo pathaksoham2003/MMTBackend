@@ -2,6 +2,7 @@ import twilio from "twilio";
 import nodemailer from "nodemailer";
 import User from "../models/User.js";
 import mongoose from "../utils/db.js";
+import Address from "../models/Address.js";
 
 let twilioClient;
 if (process.env.USE_TWILLIO_SMS === "true") {
@@ -272,10 +273,10 @@ export const verifyOTP = async (req, res) => {
   }
 };
 
-export const completeProfile = async (req, res) => {
+export const addName = async (req, res) => {
   try {
-    const {userId} = req.params;
-    const {name, avatar, addresses, mess_id} = req.body;
+    const { userId } = req.params;
+    const { name } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({
@@ -299,58 +300,88 @@ export const completeProfile = async (req, res) => {
       });
     }
 
-    if (addresses && Array.isArray(addresses)) {
-      for (const address of addresses) {
-        if (
-          !address.line1 ||
-          !address.city ||
-          !address.state ||
-          !address.pincode
-        ) {
-          return res.status(400).json({
-            success: false,
-            message: "Each address must have line1, city, state, and pincode",
-          });
-        }
-      }
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Name is required",
+      });
     }
 
-    const updateData = {};
-    if (name) updateData.name = name;
-    if (avatar) updateData.avatar = avatar;
-    if (addresses) updateData.addresses = addresses;
-
-    if (mess_id) {
-      if (user.role === "CUSTOMER" || user.role === "SUPER_ADMIN") {
-        return res.status(400).json({
-          success: false,
-          message: "CUSTOMER and SUPER_ADMIN roles cannot have mess_id",
-        });
-      }
-
-      if (!mongoose.Types.ObjectId.isValid(mess_id)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid mess_id",
-        });
-      }
-
-      updateData.mess_id = mess_id;
-      updateData.is_active = true; 
-    }
-
-    const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
-      new: true,
-      select: "-otp",
-    }).populate("mess_id");
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name },
+      { new: true, select: "-otp" }
+    );
 
     res.status(200).json({
       success: true,
-      message: "Profile updated successfully",
+      message: "Name updated successfully",
       data: updatedUser,
     });
   } catch (error) {
-    console.error("Error updating profile:", error);
+    console.error("Error updating name:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const addAddress = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { full_address, coordinates } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID",
+      });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.otp !== undefined) {
+      return res.status(400).json({
+        success: false,
+        message: "Please verify OTP first",
+      });
+    }
+
+    if (!full_address || !coordinates || !Array.isArray(coordinates) || coordinates.length !== 2) {
+      return res.status(400).json({
+        success: false,
+        message: "Full address and valid coordinates [longitude, latitude] are required",
+      });
+    }
+
+    const address = await Address.findOneAndUpdate(
+      { user_id: userId },
+      {
+        user_id: userId,
+        full_address,
+        location: {
+          type: "Point",
+          coordinates, // [lon, lat]
+        },
+      },
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Address updated successfully",
+      data: address,
+    });
+  } catch (error) {
+    console.error("Error updating address:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",

@@ -27,10 +27,9 @@
  *         mess_id:
  *           type: string
  *           description: Reference to MessDetails (only for DELIVERY and MESS_OWNER)
- *         addresses:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Address'
+ *         address:
+ *           type: object
+ *           $ref: '#/components/schemas/Address'
  *         is_active:
  *           type: boolean
  *           description: Whether the user account is active
@@ -40,100 +39,140 @@
  *         updatedAt:
  *           type: string
  *           format: date-time
- *     
+ *
  *     Address:
  *       type: object
  *       properties:
- *         line1:
+ *         full_address:
  *           type: string
- *           description: Address line 1
- *         line2:
+ *           description: Complete address provided by the user
+ *         location:
+ *           type: object
+ *           properties:
+ *             type:
+ *               type: string
+ *               example: "Point"
+ *             coordinates:
+ *               type: array
+ *               items:
+ *                 type: number
+ *               description: Longitude and latitude [lon, lat]
+ *         createdAt:
  *           type: string
- *           description: Address line 2 (optional)
- *         city:
+ *           format: date-time
+ *         updatedAt:
  *           type: string
- *           description: City name
- *         state:
- *           type: string
- *           description: State name
- *         pincode:
- *           type: string
- *           description: PIN code
- *     
- *     CreateUserRequest:
+ *           format: date-time
+ *
+ *     AddNameRequest:
  *       type: object
  *       required:
- *         - phone
- *         - role
- *       properties:
- *         phone:
- *           type: string
- *           description: 10-digit phone number
- *           example: "9876543210"
- *         role:
- *           type: string
- *           enum: [DELIVERY, MESS_OWNER, CUSTOMER, SUPER_ADMIN]
- *           example: "CUSTOMER"
- *         email:
- *           type: string
- *           description: Email address (required when USE_TWILLIO_SMS=false)
- *           example: "user@example.com"
- *     
- *     VerifyOTPRequest:
- *       type: object
- *       required:
- *         - phone
- *         - otp
- *       properties:
- *         phone:
- *           type: string
- *           description: 10-digit phone number
- *           example: "9876543210"
- *         otp:
- *           type: string
- *           description: 6-digit OTP
- *           example: "123456"
- *         email:
- *           type: string
- *           description: Email address (required when USE_TWILLIO_SMS=false)
- *           example: "user@example.com"
- *     
- *     CompleteProfileRequest:
- *       type: object
+ *         - name
  *       properties:
  *         name:
  *           type: string
  *           example: "John Doe"
- *         avatar:
+ *
+ *     AddAddressRequest:
+ *       type: object
+ *       required:
+ *         - full_address
+ *         - coordinates
+ *       properties:
+ *         full_address:
  *           type: string
- *           example: "https://example.com/avatar.jpg"
- *         addresses:
+ *           description: Complete address of the user
+ *           example: "123 Main Street, Springfield, IL 62704"
+ *         coordinates:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/Address'
- *         mess_id:
- *           type: string
- *           description: Required only for DELIVERY and MESS_OWNER roles
- *           example: "60d5ecb8b392a123456789ab"
- *     
- *     ApiResponse:
- *       type: object
- *       properties:
- *         success:
- *           type: boolean
- *         message:
- *           type: string
- *         data:
- *           type: object
- *         error:
- *           type: string
+ *             type: number
+ *           description: [Longitude, Latitude]
+ *           example: [-89.6500, 39.7833]
  */
-
 /**
  * @swagger
  * tags:
  *   name: Users
  *   description: User management and authentication
+ */
+
+/**
+ * @swagger
+ * /api/users/add-name/{userId}:
+ *   put:
+ *     summary: Add or update user's name
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AddNameRequest'
+ *     responses:
+ *       200:
+ *         description: User name updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Invalid input or OTP not verified
+ *       404:
+ *         description: User not found
+ */
+
+/**
+ * @swagger
+ * /api/users/add-address/{userId}:
+ *   put:
+ *     summary: Add or update user's address with coordinates
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AddAddressRequest'
+ *     responses:
+ *       200:
+ *         description: User address updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Invalid input or missing coordinates
+ *       404:
+ *         description: User not found
  */
 
 /**
@@ -224,45 +263,6 @@
  *                       type: boolean
  *       400:
  *         description: Invalid OTP or missing fields
- *       404:
- *         description: User not found
- */
-
-/**
- * @swagger
- * /api/users/complete-profile/{userId}:
- *   put:
- *     summary: Complete user profile with additional details
- *     tags: [Users]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: string
- *         description: User ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CompleteProfileRequest'
- *     responses:
- *       200:
- *         description: Profile updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/User'
- *       400:
- *         description: Bad request - Invalid input or OTP not verified
  *       404:
  *         description: User not found
  */

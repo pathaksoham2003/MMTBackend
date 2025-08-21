@@ -6,7 +6,7 @@ import swaggerUI from "swagger-ui-express";
 import swaggerSpec from "./swagger/swagger.js";
 
 import userRoute from "./routes/user.js";
-
+import locationRoute from "./routes/location.js";
 import "./schedulers/index.js";
 
 dotenv.config();
@@ -21,6 +21,7 @@ app.get("/", (req, res) => res.send("MMT Server Running..."));
 
 // APIS
 app.use("/api/users/",userRoute)
+app.use("/api/locations/",locationRoute)
 // schedulers
 
 

@@ -1,9 +1,9 @@
-
 import express from 'express';
 import {
   createUser,
   verifyOTP,
-  completeProfile,
+  addName,
+  addAddress,
   resendOTP,
   getUserProfile,
   getAllUsers,
@@ -18,8 +18,11 @@ router.post('/create-user', createUser);
 // POST /api/users/verify-otp
 router.post('/verify-otp', verifyOTP);
 
-// PUT /api/users/complete-profile/:userId
-router.put('/complete-profile/:userId', completeProfile);
+// PUT /api/users/add-name/:userId
+router.put('/add-name/:userId', addName);
+
+// PUT /api/users/add-address/:userId
+router.put('/add-address/:userId', addAddress);
 
 // POST /api/users/resend-otp
 router.post('/resend-otp', resendOTP);
