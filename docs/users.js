@@ -19,7 +19,7 @@
  *           enum: [DELIVERY, MESS_OWNER, CUSTOMER, SUPER_ADMIN]
  *           description: User's role in the system
  *         phone:
- *           type: number
+ *           type: string
  *           description: User's phone number (10 digits)
  *         email:
  *           type: string
@@ -33,6 +33,12 @@
  *         is_active:
  *           type: boolean
  *           description: Whether the user account is active
+ *         has_name_completed:
+ *           type: boolean
+ *           description: Whether user has completed name setup
+ *         has_address_completed:
+ *           type: boolean
+ *           description: Whether user has completed address setup
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -131,15 +137,10 @@
  *         phone:
  *           type: string
  *           description: 10-digit phone number
- *           example: "9876543210"
  *         otp:
  *           type: string
  *           description: 6-digit OTP
  *           example: "123456"
- *         email:
- *           type: string
- *           description: Email address (required when USE_TWILLIO_SMS=false)
- *           example: "user@example.com"
  */
 
 /**
@@ -151,17 +152,17 @@
 
 /**
  * @swagger
- * /api/users/add-name/{userId}:
+ * /api/users/add-name/{phone}:
  *   put:
  *     summary: Add or update user's name
  *     tags: [Users]
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: phone
  *         required: true
  *         schema:
  *           type: string
- *         description: User ID
+ *         description: 10-digit phone number
  *     requestBody:
  *       required: true
  *       content:
@@ -171,35 +172,25 @@
  *     responses:
  *       200:
  *         description: User name updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/User'
  *       400:
  *         description: Invalid input or OTP not verified
  *       404:
  *         description: User not found
  */
+
 /**
  * @swagger
- * /api/users/add-address/{userId}:
+ * /api/users/add-address/{phone}:
  *   put:
  *     summary: Add or update user's address with coordinates
  *     tags: [Users]
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: phone
  *         required: true
  *         schema:
  *           type: string
- *         description: User ID
+ *         description: 10-digit phone number
  *     requestBody:
  *       required: true
  *       content:
@@ -209,54 +200,6 @@
  *     responses:
  *       200:
  *         description: User address added/updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "Address added/updated successfully"
- *                 data:
- *                   type: object
- *                   properties:
- *                     _id:
- *                       type: string
- *                       description: Address ID
- *                     user_id:
- *                       type: string
- *                       description: User ID
- *                     line1:
- *                       type: string
- *                     line2:
- *                       type: string
- *                     instructions:
- *                       type: string
- *                     tag:
- *                       type: string
- *                     full_address:
- *                       type: string
- *                       description: Generated full address combining line1, line2, and instructions
- *                     location:
- *                       type: object
- *                       properties:
- *                         type:
- *                           type: string
- *                           example: "Point"
- *                         coordinates:
- *                           type: array
- *                           items:
- *                             type: number
- *                           description: [Longitude, Latitude]
- *                     createdAt:
- *                       type: string
- *                       format: date-time
- *                     updatedAt:
- *                       type: string
- *                       format: date-time
  *       400:
  *         description: Invalid input or missing required fields (line1 or coordinates)
  *       404:
@@ -278,36 +221,10 @@
  *     responses:
  *       201:
  *         description: User created successfully and OTP sent
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "User created successfully. OTP sent to phone number."
- *                 data:
- *                   type: object
- *                   properties:
- *                     userId:
- *                       type: string
- *                     phone:
- *                       type: number
- *                     role:
- *                       type: string
- *                     otpSent:
- *                       type: boolean
+ *       200:
+ *         description: Existing user found, OTP resent
  *       400:
  *         description: Bad request - Invalid input
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ApiResponse'
- *       409:
- *         description: User already exists
  *       500:
  *         description: Internal server error or OTP sending failed
  */
@@ -316,7 +233,7 @@
  * @swagger
  * /api/users/verify-otp:
  *   post:
- *     summary: Verify OTP for phone number
+ *     summary: Verify OTP for a user
  *     tags: [Users]
  *     requestBody:
  *       required: true
@@ -326,31 +243,11 @@
  *             $ref: '#/components/schemas/VerifyOTPRequest'
  *     responses:
  *       200:
- *         description: OTP verified successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 message:
- *                   type: string
- *                   example: "OTP verified successfully"
- *                 data:
- *                   type: object
- *                   properties:
- *                     userId:
- *                       type: string
- *                     phone:
- *                       type: number
- *                     role:
- *                       type: string
- *                     verified:
- *                       type: boolean
- *       400:
- *         description: Invalid OTP or missing fields
+ *         description: OTP verified and profile completed
+ *       202:
+ *         description: OTP verified but profile incomplete
+ *       401:
+ *         description: Invalid OTP
  *       404:
  *         description: User not found
  */
@@ -380,22 +277,6 @@
  *     responses:
  *       200:
  *         description: OTP resent successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   type: object
- *                   properties:
- *                     phone:
- *                       type: number
- *                     otpSent:
- *                       type: boolean
  *       400:
  *         description: User already verified or missing phone
  *       404:
@@ -406,31 +287,22 @@
 
 /**
  * @swagger
- * /api/users/profile/{userId}:
+ * /api/users/profile/{phone}:
  *   get:
- *     summary: Get user profile by ID
+ *     summary: Get user profile by phone number
  *     tags: [Users]
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: phone
  *         required: true
  *         schema:
  *           type: string
- *         description: User ID
+ *         description: 10-digit phone number
  *     responses:
  *       200:
  *         description: User profile retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   $ref: '#/components/schemas/User'
  *       400:
- *         description: Invalid user ID
+ *         description: Invalid phone number
  *       404:
  *         description: User not found
  */
@@ -447,62 +319,38 @@
  *         schema:
  *           type: integer
  *           default: 1
- *         description: Page number
  *       - in: query
  *         name: limit
  *         schema:
  *           type: integer
  *           default: 10
- *         description: Number of users per page
  *       - in: query
  *         name: role
  *         schema:
  *           type: string
  *           enum: [DELIVERY, MESS_OWNER, CUSTOMER, SUPER_ADMIN]
- *         description: Filter by user role
  *       - in: query
  *         name: is_active
  *         schema:
  *           type: boolean
- *         description: Filter by active status
  *     responses:
  *       200:
  *         description: Users retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   type: object
- *                   properties:
- *                     users:
- *                       type: array
- *                       items:
- *                         $ref: '#/components/schemas/User'
- *                     totalPages:
- *                       type: integer
- *                     currentPage:
- *                       type: integer
- *                     total:
- *                       type: integer
  */
 
 /**
  * @swagger
- * /api/users/status/{userId}:
+ * /api/users/status/{phone}:
  *   patch:
  *     summary: Update user active status (activate/deactivate)
  *     tags: [Users]
  *     parameters:
  *       - in: path
- *         name: userId
+ *         name: phone
  *         required: true
  *         schema:
  *           type: string
- *         description: User ID
+ *         description: 10-digit phone number
  *     requestBody:
  *       required: true
  *       content:
@@ -518,19 +366,8 @@
  *     responses:
  *       200:
  *         description: User status updated successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
- *                   type: string
- *                 data:
- *                   $ref: '#/components/schemas/User'
  *       400:
- *         description: Invalid user ID or is_active value
+ *         description: Invalid phone number or is_active value
  *       404:
  *         description: User not found
  */

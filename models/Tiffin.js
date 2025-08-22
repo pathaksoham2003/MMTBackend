@@ -32,6 +32,10 @@ const tiffinSchema = new mongoose.Schema({
   maximum_price: { 
     type: Number, 
     required: true 
+  },
+  active:{
+    type:Boolean,
+    default:true
   }
 }, {timestamps:true}); 
  

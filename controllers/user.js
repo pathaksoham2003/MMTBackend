@@ -127,39 +127,58 @@ export const createUser = async (req, res) => {
       });
     }
 
-    const existingQuery = {phone};
-    if (!useTwilioSMS && email) {
-      existingQuery.$or = [{phone}];
-    }
-
-    const existingUser = await User.findOne(existingQuery);
-    if (existingUser) {
-      const conflictField =
-        existingUser.phone === parseInt(phone) ? "phone number" : "email";
-      return res.status(409).json({
-        success: false,
-        message: `User with this ${conflictField} already exists`,
-      });
-    }
+    const existingUser = await User.findOne({
+      $or: [{phone}, email ? {email} : {}],
+    });
 
     const otp = generateOTP();
 
-    const userData = {
+    if (existingUser) {
+      // ✅ User exists → send OTP again
+      const contactInfo = useTwilioSMS ? phone : email;
+      const otpResult = await sendOTP(contactInfo, otp, !useTwilioSMS);
+
+      if (!otpResult.success) {
+        return res.status(500).json({
+          success: false,
+          message: `Failed to send OTP via ${
+            useTwilioSMS ? "SMS" : "Email"
+          }. Please try again.`,
+          error: otpResult.error,
+        });
+      }
+
+      existingUser.otp = otp;
+      await existingUser.save();
+
+      return res.status(200).json({
+        success: true,
+        message: `OTP resent to ${
+          useTwilioSMS ? "phone number" : "email address"
+        }.`,
+        data: {
+          userId: existingUser._id,
+          phone: existingUser.phone,
+          role: existingUser.role,
+          otpSent: true,
+          method: useTwilioSMS ? "SMS" : "Email",
+          has_name_completed: existingUser.has_name_completed,
+          has_address_completed: existingUser.has_address_completed,
+        },
+      });
+    }
+
+    // ✅ User does not exist → create and send OTP
+    const newUser = new User({
       phone,
       role,
       otp,
-      is_active: true,
-    };
+      is_active: role === "CUSTOMER" || role === "SUPER_ADMIN",
+      has_name_completed: false,
+      has_address_completed: false,
+      ...(email && {email}),
+    });
 
-    if (!useTwilioSMS && email) {
-      userData.email = email;
-    }
-
-    if (role !== "CUSTOMER" && role !== "SUPER_ADMIN") {
-      userData.is_active = false;
-    }
-
-    const newUser = new User(userData);
     await newUser.save();
 
     const contactInfo = useTwilioSMS ? phone : email;
@@ -176,24 +195,21 @@ export const createUser = async (req, res) => {
       });
     }
 
-    const responseData = {
-      userId: newUser._id,
-      phone: newUser.phone,
-      role: newUser.role,
-      otpSent: true,
-      method: useTwilioSMS ? "SMS" : "Email",
-    };
-
-    if (!useTwilioSMS && email) {
-      responseData.email = email;
-    }
-
     res.status(201).json({
       success: true,
       message: `User created successfully. OTP sent to ${
         useTwilioSMS ? "phone number" : "email address"
       }.`,
-      data: responseData,
+      data: {
+        userId: newUser._id,
+        phone: newUser.phone,
+        role: newUser.role,
+        otpSent: true,
+        method: useTwilioSMS ? "SMS" : "Email",
+        has_name_completed: newUser.has_name_completed,
+        has_address_completed: newUser.has_address_completed,
+        ...(email && {email}),
+      },
     });
   } catch (error) {
     console.error("Error creating user:", error);
@@ -207,29 +223,16 @@ export const createUser = async (req, res) => {
 
 export const verifyOTP = async (req, res) => {
   try {
-    const {phone, otp, email} = req.body;
-    const useTwilioSMS = process.env.USE_TWILLIO_SMS === "true";
+    const {phone, otp} = req.body;
 
     if (!phone || !otp) {
       return res.status(400).json({
         success: false,
-        message: "Phone number and OTP are required",
+        message: "User ID and OTP are required",
       });
     }
 
-    if (!useTwilioSMS && !email) {
-      return res.status(400).json({
-        success: false,
-        message: "Email is required when SMS service is disabled",
-      });
-    }
-
-    const query = {phone};
-    if (!useTwilioSMS && email) {
-      query.email = email;
-    }
-
-    const user = await User.findOne(query);
+    const user = await User.find({phone});
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -237,31 +240,40 @@ export const verifyOTP = async (req, res) => {
       });
     }
 
-    if (user.otp !== parseInt(otp)) {
-      return res.status(400).json({
+    // Check OTP
+    if (user.otp !== otp) {
+      return res.status(401).json({
         success: false,
         message: "Invalid OTP",
       });
     }
 
-    user.otp = undefined;
-    await user.save();
-
-    const responseData = {
-      userId: user._id,
-      phone: user.phone,
-      role: user.role,
-      verified: true,
-    };
-
-    if (user.email) {
-      responseData.email = user.email;
+    // OTP is correct → check profile completion
+    if (!user.name) {
+      return res.status(202).json({
+        success: true,
+        message: "Name not completed",
+        nextStep: "ADD_NAME",
+      });
     }
 
-    res.status(200).json({
+    if (!user.address) {
+      return res.status(203).json({
+        success: true,
+        message: "Address not completed",
+        nextStep: "ADD_ADDRESS",
+      });
+    }
+
+    // If all details are complete
+    return res.status(200).json({
       success: true,
-      message: "OTP verified successfully",
-      data: responseData,
+      message: "OTP verified successfully. Profile complete.",
+      data: {
+        userId: user._id,
+        phone: user.phone,
+        role: user.role,
+      },
     });
   } catch (error) {
     console.error("Error verifying OTP:", error);
@@ -272,20 +284,19 @@ export const verifyOTP = async (req, res) => {
     });
   }
 };
-
 export const addName = async (req, res) => {
   try {
-    const {userId} = req.params;
+    const {phone} = req.params;
     const {name} = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!/^\d{10}$/.test(phone)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid user ID",
+        message: "Invalid phone number",
       });
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({phone});
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -307,16 +318,19 @@ export const addName = async (req, res) => {
       });
     }
 
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      {name},
-      {new: true, select: "-otp"}
-    );
+    user.name = name;
+    await user.save();
 
     res.status(200).json({
       success: true,
       message: "Name updated successfully",
-      data: updatedUser,
+      data: user.toObject({
+        versionKey: false,
+        transform: (_, ret) => {
+          delete ret.otp;
+          return ret;
+        },
+      }),
     });
   } catch (error) {
     console.error("Error updating name:", error);
@@ -327,19 +341,20 @@ export const addName = async (req, res) => {
     });
   }
 };
+
 export const addAddress = async (req, res) => {
   try {
-    const {userId} = req.params;
+    const {phone} = req.params;
     const {line1, line2, instructions, tag, coordinates} = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!/^\d{10}$/.test(phone)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid user ID",
+        message: "Invalid phone number",
       });
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findOne({phone});
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -367,24 +382,20 @@ export const addAddress = async (req, res) => {
       });
     }
 
-    // Generate full_address from provided parts (optional)
     const full_address = [line1, line2, instructions]
       .filter(Boolean)
       .join(", ");
 
     const address = await Address.findOneAndUpdate(
-      {user_id: userId},
+      {user_id: user._id},
       {
-        user_id: userId,
+        user_id: user._id,
         line1,
         line2,
         instructions,
         tag,
         full_address,
-        location: {
-          type: "Point",
-          coordinates, // [lon, lat]
-        },
+        location: {type: "Point", coordinates},
       },
       {upsert: true, new: true}
     );
@@ -484,19 +495,18 @@ export const resendOTP = async (req, res) => {
     });
   }
 };
-
 export const getUserProfile = async (req, res) => {
   try {
-    const {userId} = req.params;
+    const {phone} = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!/^\d{10}$/.test(phone)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid user ID",
+        message: "Invalid phone number",
       });
     }
 
-    const user = await User.findById(userId).select("-otp");
+    const user = await User.findOne({phone}).select("-otp");
 
     if (!user) {
       return res.status(404).json({
@@ -556,13 +566,13 @@ export const getAllUsers = async (req, res) => {
 
 export const updateUserStatus = async (req, res) => {
   try {
-    const {userId} = req.params;
+    const {phone} = req.params;
     const {is_active} = req.body;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
+    if (!/^\d{10}$/.test(phone)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid user ID",
+        message: "Invalid phone number",
       });
     }
 
@@ -573,8 +583,8 @@ export const updateUserStatus = async (req, res) => {
       });
     }
 
-    const user = await User.findByIdAndUpdate(
-      userId,
+    const user = await User.findOneAndUpdate(
+      {phone},
       {is_active},
       {new: true, select: "-otp"}
     );
