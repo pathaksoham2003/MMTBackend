@@ -1,0 +1,8 @@
+user_phone,line1,line2,instructions,tag,longitude,latitude,is_active 
+9876543210,"123 Main Street","Apt 4B","Ring the bell twice","HOME",72.8177,19.0176,true 
+9876543211,"456 Park Avenue","","Security gate entry","OFFICE",77.1025,28.7041,true 
+9876543212,"789 Oak Lane","Floor 2","Call before delivery","HOME",77.5946,12.9716,true 
+9876543213,"321 Pine Street","","Opposite park","HOME",80.2707,13.0827,true 
+9876543214,"654 Elm Drive","","Near metro station","HOME",73.8567,18.5204,true 
+9876543215,"987 Birch Road","Bldg C","Wing A entrance","OFFICE",72.8777,19.0976,true 
+9876543216,"147 Cedar Court","","Ground floor","HOME",77.2025,28.6041,true 

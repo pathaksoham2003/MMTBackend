@@ -1,12 +1,12 @@
-name,avatar,role,phone,otp,address_line1,address_line2,city,state,pincode,is_active
-"John Doe","https://example.com/avatar1.jpg",CUSTOMER,9876543210,1234,"123 Main Street","Apt 4B","Mumbai","Maharashtra","400001",true 
-"Jane Smith","https://example.com/avatar2.jpg",CUSTOMER,9876543211,1235,"456 Park Avenue","","Delhi","Delhi","110001",true 
-"Mike Johnson","https://example.com/avatar3.jpg",CUSTOMER,9876543212,1236,"789 Oak Lane","Floor 2","Bangalore","Karnataka","560001",true 
-"Sarah Wilson","https://example.com/avatar4.jpg",CUSTOMER,9876543213,1237,"321 Pine Street","","Chennai","Tamil Nadu","600001",true 
-"David Brown","https://example.com/avatar5.jpg",DELIVERY,9876543214,1238,"654 Elm Drive","","Pune","Maharashtra","411001",true 
-"Lisa Garcia","https://example.com/avatar6.jpg",DELIVERY,9876543215,1239,"987 Birch Road","Bldg C","Hyderabad","Telangana","500001",true 
-"Tom Anderson","https://example.com/avatar7.jpg",DELIVERY,9876543216,1240,"147 Cedar Court","","Kolkata","West Bengal","700001",true 
-"Raj Patel","https://example.com/avatar8.jpg",MESS_OWNER,9876543217,1241,"258 Curry Lane","","Ahmedabad","Gujarat","380001",true 
-"Priya Sharma","https://example.com/avatar9.jpg",MESS_OWNER,9876543218,1242,"369 Spice Street","Shop 1","Jaipur","Rajasthan","302001",true 
-"Amit Kumar","https://example.com/avatar10.jpg",MESS_OWNER,9876543219,1243,"741 Food Plaza","Unit 5","Lucknow","Uttar Pradesh","226001",true 
-"Admin User","https://example.com/avatar11.jpg",SUPER_ADMIN,9876543220,1244,"852 Admin Tower","Floor 10","Mumbai","Maharashtra","400002",true 
+name,avatar,role,phone,otp,email,is_active 
+"John Doe","https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",CUSTOMER,9876543210,1234,"john.doe@email.com",true 
+"Jane Smith","https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face",CUSTOMER,9876543211,1235,"jane.smith@email.com",true 
+"Mike Johnson","https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",CUSTOMER,9876543212,1236,"mike.johnson@email.com",true 
+"Sarah Wilson","https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",CUSTOMER,9876543213,1237,"sarah.wilson@email.com",true 
+"David Brown","https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",DELIVERY,9876543214,1238,"david.brown@email.com",true 
+"Lisa Garcia","https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150&h=150&fit=crop&crop=face",DELIVERY,9876543215,1239,"lisa.garcia@email.com",true 
+"Tom Anderson","https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=150&h=150&fit=crop&crop=face",DELIVERY,9876543216,1240,"tom.anderson@email.com",true 
+"Raj Patel","https://images.unsplash.com/photo-1566492031773-4f4e44671d66?w=150&h=150&fit=crop&crop=face",MESS_OWNER,9876543217,1241,"raj.patel@email.com",true 
+"Priya Sharma","https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face",MESS_OWNER,9876543218,1242,"priya.sharma@email.com",true 
+"Amit Kumar","https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=150&h=150&fit=crop&crop=face",MESS_OWNER,9876543219,1243,"amit.kumar@email.com",true 
+"Admin User","https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",SUPER_ADMIN,9876543220,1244,"admin@tiffindelivery.com",true 

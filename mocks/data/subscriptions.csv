@@ -1,7 +1,7 @@
-day_slot_type,price,time_slot_type,buffer_days,provided_tiffins,veg_only
-Afternoon,150.00,AFTERNOON,2,30,true 
-Evening,180.00,EVENING,3,30,false 
-Afternoon,120.00,AFTERNOON,1,15,true 
-Evening,200.00,EVENING,2,30,false 
-Afternoon,90.00,AFTERNOON,1,7,true 
-Evening,250.00,EVENING,3,30,false 
+name,mess_owner_phone,day_slot_type,price,subscription_type,time_slot_type,veg_only,active 
+"Premium Afternoon Plan",9876543217,AFTERNOON,150.00,MONTHLY,AFTERNOON,true,true 
+"Deluxe Evening Plan",9876543217,EVENING,180.00,MONTHLY,EVENING,false,true 
+"Standard Afternoon Plan",9876543218,AFTERNOON,120.00,WEEKLY,AFTERNOON,true,true 
+"Premium Evening Plan",9876543218,EVENING,200.00,MONTHLY,EVENING,false,true 
+"Daily Lunch Special",9876543219,AFTERNOON,90.00,WEEKLY,AFTERNOON,true,true 
+"Gourmet Evening Plan",9876543219,EVENING,250.00,MONTHLY,EVENING,false,true 

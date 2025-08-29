@@ -23,8 +23,8 @@ const orderSchema = new mongoose.Schema({
   }, 
   status: { 
     type: String, 
-    enum: ['in_process', 'accepted', 'not_accepted', 'out_of_delivery', 'delivered', 'delivered_returned'], 
-    default: 'in_process' 
+    enum: ['IN_PROCESS', 'ACCEPTED', 'NOT_ACCEPTED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'RETURNED'], 
+    default: 'IN_PROCESS' 
   }, 
   address: { 
     line1: String, 

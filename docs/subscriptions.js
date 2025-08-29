@@ -9,26 +9,49 @@
  *           type: string
  *         name:
  *           type: string
+ *           example: "Monthly Veg Subscription"
  *         mess_id:
  *           $ref: '#/components/schemas/MessDetails'
  *         day_slot:
- *           $ref: '#/components/schemas/DaySlotTypes'
+ *           type: string
+ *           enum: [EVENING, AFTERNOON]
+ *           example: "EVENING"
  *         price:
  *           type: number
+ *           format: float
+ *           example: 1499.99
  *         type:
- *           $ref: '#/components/schemas/SubscriptionTypes'
+ *           type: string
+ *           example: "NORMAL"
+ *         buffer_days:
+ *           type: integer
+ *           example: 2
+ *         provided_tiffins:
+ *           type: integer
+ *           example: 30
  *         time_slots:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/TimeSlots'
+ *             type: object
+ *             properties:
+ *               start_time:
+ *                 type: string
+ *                 example: "12:00"
+ *               end_time:
+ *                 type: string
+ *                 example: "14:00"
  *         veg_only:
  *           type: boolean
+ *           example: true
  *         active:
  *           type: boolean
+ *           example: true
  *         createdAt:
  *           type: string
+ *           format: date-time
  *         updatedAt:
  *           type: string
+ *           format: date-time
  */
 
 /**
@@ -49,25 +72,47 @@
  *               - day_slot
  *               - price
  *               - type
+ *               - buffer_days
+ *               - provided_tiffins
  *               - time_slots
  *               - veg_only
  *             properties:
  *               name:
  *                 type: string
+ *                 example: "Monthly Veg Subscription"
  *               mess_id:
  *                 type: string
+ *                 example: "64f4c3b89c6d7f001f4c2d12"
  *               day_slot:
  *                 type: string
+ *                 enum: [EVENING, AFTERNOON]
+ *                 example: "EVENING"
  *               price:
  *                 type: number
+ *                 example: 1499.99
  *               type:
  *                 type: string
+ *                 example: "NORMAL"
+ *               buffer_days:
+ *                 type: integer
+ *                 example: 2
+ *               provided_tiffins:
+ *                 type: integer
+ *                 example: 30
  *               time_slots:
  *                 type: array
  *                 items:
- *                   type: string
+ *                   type: object
+ *                   properties:
+ *                     start_time:
+ *                       type: string
+ *                       example: "12:00"
+ *                     end_time:
+ *                       type: string
+ *                       example: "14:00"
  *               veg_only:
  *                 type: boolean
+ *                 example: true
  *     responses:
  *       201:
  *         description: Subscription created successfully
@@ -92,30 +137,38 @@
  *         name: page
  *         schema:
  *           type: integer
+ *           example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
  *       - in: query
  *         name: mess_id
  *         schema:
  *           type: string
+ *           example: "64f4c3b89c6d7f001f4c2d12"
  *       - in: query
  *         name: day_slot
  *         schema:
  *           type: string
+ *           enum: [EVENING, AFTERNOON]
+ *           example: "EVENING"
  *       - in: query
  *         name: veg_only
  *         schema:
  *           type: boolean
+ *           example: true
  *       - in: query
  *         name: type
  *         schema:
  *           type: string
- *       - in: query
- *         name: time_slot_id
- *         schema:
- *           type: string
+ *           example: "NORMAL"
  *       - in: query
  *         name: name
  *         schema:
  *           type: string
+ *           example: "Monthly Veg"
  *     responses:
  *       200:
  *         description: List of subscriptions
@@ -150,6 +203,7 @@
  *         required: true
  *         schema:
  *           type: string
+ *           example: "64f4c3b89c6d7f001f4c2d12"
  *     responses:
  *       200:
  *         description: Subscription details
@@ -175,6 +229,7 @@
  *         required: true
  *         schema:
  *           type: string
+ *           example: "64f4c3b89c6d7f001f4c2d12"
  *     responses:
  *       200:
  *         description: Subscription toggled successfully

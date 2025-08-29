@@ -1,9 +1,9 @@
-mess_phone,quantity,unit,nutrition,protein,type_name,is_veg,photos,maximum_price
-9876543217,1,"box","Balanced meal with carbs and proteins","15g","Special",true,"https://example.com/tiffin1.jpg,https://example.com/tiffin1_2.jpg",180.00 
-9876543218,1,"box","Rich in fiber and vitamins","12g","General",true,"https://example.com/tiffin2.jpg",150.00 
-9876543219,1,"box","High protein content","20g","Special",false,"https://example.com/tiffin3.jpg,https://example.com/tiffin3_2.jpg",200.00 
-9876543217,1,"box","Light and healthy","10g","General",true,"https://example.com/tiffin4.jpg",120.00 
-9876543218,1,"box","Nutritious and filling","18g","Special",false,"https://example.com/tiffin5.jpg",190.00 
-9876543219,1,"box","Traditional homestyle","14g","General",true,"https://example.com/tiffin6.jpg",140.00 
-9876543217,1,"box","Protein rich meal","22g","Special",false,"https://example.com/tiffin7.jpg,https://example.com/tiffin7_2.jpg",220.00 
-9876543218,1,"box","Balanced nutrition","16g","General",true,"https://example.com/tiffin8.jpg",160.00 
+mess_owner_phone,quantity,unit,nutrition,protein,tiffin_type,is_veg,photos,maximum_price,active 
+9876543217,1,"box","Balanced meal with carbs and proteins","15g",SPECIAL,true,"https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=800&h=600&fit=crop,https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop",180.00,true 
+9876543218,1,"box","Rich in fiber and vitamins","12g",NORMAL,true,"https://images.unsplash.com/photo-1563379091339-03246668d312?w=800&h=600&fit=crop",150.00,true 
+9876543219,1,"box","High protein content","20g",SPECIAL,false,"https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&h=600&fit=crop,https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&h=600&fit=crop",200.00,true 
+9876543217,1,"box","Light and healthy","10g",NORMAL,true,"https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop",120.00,true 
+9876543218,1,"box","Nutritious and filling","18g",SPECIAL,false,"https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=800&h=600&fit=crop",190.00,true 
+9876543219,1,"box","Traditional homestyle","14g",NORMAL,true,"https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&h=600&fit=crop",140.00,true 
+9876543217,1,"box","Protein rich meal","22g",SPECIAL,false,"https://images.unsplash.com/photo-1631709971765-4b03e4a6ce34?w=800&h=600&fit=crop,https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&h=600&fit=crop",220.00,true 
+9876543218,1,"box","Balanced nutrition","16g",NORMAL,true,"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&h=600&fit=crop",160.00,true 

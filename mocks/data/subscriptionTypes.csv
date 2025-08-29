@@ -1,4 +1,4 @@
-time,type
-"30 days",Monthly 
-"7 days",Weekly 
-"1 day",Daily 
+type,buffer_days,provided_tiffins 
+"MONTHLY",2,30 
+"WEEKLY",1,7 
+"DAILY",0,1 

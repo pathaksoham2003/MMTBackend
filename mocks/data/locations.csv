@@ -1,0 +1,6 @@
+name,coordinates_type,longitude,latitude,radius,isActive 
+"Mumbai Central","Point",72.8177,19.0176,5000,true 
+"Delhi NCR","Point",77.1025,28.7041,8000,true 
+"Bangalore Tech Park","Point",77.5946,12.9716,6000,true 
+"Chennai Marina","Point",80.2707,13.0827,4500,true 
+"Pune IT Hub","Point",73.8567,18.5204,5500,true 

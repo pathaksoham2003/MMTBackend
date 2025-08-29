@@ -4,7 +4,7 @@ const subscriptionSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: true,
+      required: true, // fixed typo
     },
     mess_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -12,26 +12,41 @@ const subscriptionSchema = new mongoose.Schema(
       required: true,
     },
     day_slot: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "DaySlotTypes",
+      type: String,
+      enum: ["EVENING", "AFTERNOON"],
       required: true,
     },
     price: {
       type: mongoose.Schema.Types.Decimal128,
       required: true,
-      get: (v) => parseFloat(v.toString()), // optional getter to convert to float
-      set: (v) => v.toFixed(2), // stores exactly 2 decimals
+      get: (v) => parseFloat(v.toString()),
+      set: (v) =>
+        mongoose.Types.Decimal128.fromString(parseFloat(v).toFixed(2)), // fixed setter
     },
     type: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "SubscriptionTypes",
+      type: String, 
+      required: true,
+    },
+    buffer_days: {
+      type: Number,
+      required: true,
+    },
+    provided_tiffins: {
+      type: Number,
       required: true,
     },
     time_slots: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "TimeSlots",
-        required: true,
+        start_time: {
+          type: String,
+          required: true,
+          match: /^([0-1]\d|2[0-3]):([0-5]\d)$/, // HH:mm format
+        },
+        end_time: {
+          type: String,
+          required: true,
+          match: /^([0-1]\d|2[0-3]):([0-5]\d)$/,
+        },
       },
     ],
     veg_only: {
@@ -43,7 +58,7 @@ const subscriptionSchema = new mongoose.Schema(
       default: true,
     },
   },
-  {timestamps: true}
+  { timestamps: true }
 );
 
 export default mongoose.model("Subscription", subscriptionSchema);

@@ -1,4 +1,4 @@
-phone,mess_photos,menu_items,address_line1,address_line2,city,state,pincode
-9876543217,"https://example.com/mess1_1.jpg,https://example.com/mess1_2.jpg","Dal Rice,Roti,Sabzi,Pickle","258 Curry Lane","","Ahmedabad","Gujarat","380001" 
-9876543218,"https://example.com/mess2_1.jpg,https://example.com/mess2_2.jpg","Rajma Chawal,Naan,Paneer Curry,Raita","369 Spice Street","Shop 1","Jaipur","Rajasthan","302001" 
-9876543219,"https://example.com/mess3_1.jpg,https://example.com/mess3_2.jpg","Chole Bhature,Paratha,Aloo Gobi,Lassi","741 Food Plaza","Unit 5","Lucknow","Uttar Pradesh","226001" 
+mess_owner_phone,phone,mess_photos,line1,line2,city,state,pincode 
+9876543217,9876543217,"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&h=600&fit=crop,https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop","258 Curry Lane","","Ahmedabad","Gujarat","380001" 
+9876543218,9876543218,"https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&h=600&fit=crop,https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&h=600&fit=crop","369 Spice Street","Shop 1","Jaipur","Rajasthan","302001" 
+9876543219,9876543219,"https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&h=600&fit=crop,https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&h=600&fit=crop","741 Food Plaza","Unit 5","Lucknow","Uttar Pradesh","226001" 
