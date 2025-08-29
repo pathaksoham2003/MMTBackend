@@ -10,6 +10,7 @@ import userUserRoute from "./routes/messUser.js";
 import locationRoute from "./routes/location.js";
 import messRoute from "./routes/mess.js";
 import subscriptionsRoute from "./routes/subscriptions.js";
+import recommendationRoute from "./routes/recommendation.js";
 import "./schedulers/index.js";
 
 dotenv.config();
@@ -23,11 +24,12 @@ app.use(express.json());
 app.get("/", (req, res) => res.send("MMT Server Running..."));
 
 // APIS
-app.use("/api/users/",userRoute)
-app.use("/api/users/",userUserRoute)
-app.use("/api/locations/",locationRoute)
-app.use("/api/mess/",messRoute)
-app.use("/api/subscriptions",subscriptionsRoute)
+app.use("/api/recommend", recommendationRoute)
+app.use("/api/users/", userRoute)
+app.use("/api/users/", userUserRoute)
+app.use("/api/locations/", locationRoute)
+app.use("/api/mess/", messRoute)
+app.use("/api/subscriptions", subscriptionsRoute)
 // schedulers
 
 
