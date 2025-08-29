@@ -93,6 +93,41 @@
 
 /**
  * @swagger
+ * /api/tiffins/mess/{messId}:
+ *   get:
+ *     summary: Get all Tiffins for a specific Mess
+ *     tags: [Tiffins]
+ *     parameters:
+ *       - in: path
+ *         name: messId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The Mess ID
+ *     responses:
+ *       200:
+ *         description: List of Tiffins for the given Mess
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 messId:
+ *                   type: string
+ *                 count:
+ *                   type: number
+ *                 tiffins:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Tiffin'
+ *       404:
+ *         description: No Tiffins found for this Mess
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     Tiffin:
@@ -101,21 +136,29 @@
  *         - mess_id
  *         - is_veg
  *         - maximum_price
+ *         - items
  *       properties:
  *         mess_id:
  *           type: string
  *           description: ID of the mess providing this Tiffin
  *         items:
- *           type: object
- *           properties:
- *             quantity:
- *               type: number
- *             unit:
- *               type: string
- *             nutrition:
- *               type: string
- *             protein:
- *               type: string
+ *           type: array
+ *           description: Array of food items in the Tiffin
+ *           items:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Name of the item (e.g., Roti, Dal)
+ *               quantity:
+ *                 type: number
+ *               unit:
+ *                 type: string
+ *                 example: "pcs"
+ *               nutrition:
+ *                 type: string
+ *               protein:
+ *                 type: string
  *         type:
  *           type: string
  *           enum: [NORMAL, SPECIAL]

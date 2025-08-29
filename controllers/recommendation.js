@@ -12,7 +12,6 @@ export const getRecommendation = async (req, res) => {
       });
     }
 
-    // Step 1: Find a subscription that matches filters
     const subscription = await Subscription.findOne({
       type: subscriptionType.toUpperCase(),
       day_slot: daySlot.toUpperCase(),
@@ -23,7 +22,6 @@ export const getRecommendation = async (req, res) => {
       return res.status(404).json({ message: "No matching subscription found" });
     }
 
-    // Step 2: Find a tiffin for the same mess with the requested type
     const tiffin = await Tiffin.findOne({
       mess_id: subscription.mess_id,
       type: tiffinType.toUpperCase(),
@@ -34,7 +32,6 @@ export const getRecommendation = async (req, res) => {
       return res.status(404).json({ message: "No matching tiffin found" });
     }
 
-    // Step 3: Fetch mess details
     const mess = await MessDetails.findById(subscription.mess_id).lean();
 
     return res.json({

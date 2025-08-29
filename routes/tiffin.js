@@ -5,6 +5,7 @@ import {
   getTiffinById,
   updateTiffin,
   deleteTiffin,
+  getTiffinsByMessId,
 } from "../controllers/tiffin.js";
 
 const router = express.Router();
@@ -17,5 +18,8 @@ router.get("/", getTiffins);
 router.get("/:id", getTiffinById);
 router.put("/:id", updateTiffin);
 router.delete("/:id", deleteTiffin);
+
+// ✅ New route
+router.get("/mess/:messId", getTiffinsByMessId);
 
 export default router;

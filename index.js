@@ -11,6 +11,7 @@ import locationRoute from "./routes/location.js";
 import messRoute from "./routes/mess.js";
 import subscriptionsRoute from "./routes/subscriptions.js";
 import recommendationRoute from "./routes/recommendation.js";
+import tiffinsRoute from "./routes/tiffin.js";
 import "./schedulers/index.js";
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.use("/api/recommend", recommendationRoute)
 app.use("/api/users/", userRoute)
 app.use("/api/users/", userUserRoute)
 app.use("/api/locations/", locationRoute)
+app.use("/api/tiffins/", tiffinsRoute)
 app.use("/api/mess/", messRoute)
 app.use("/api/subscriptions", subscriptionsRoute)
 // schedulers

@@ -6,12 +6,15 @@ const tiffinSchema = new mongoose.Schema({
     ref: 'MessDetails',
     required: true
   },
-  items: {
-    quantity: Number,
-    unit: String,
-    nutrition: String,
-    protein: String
-  },
+  items: [
+    {
+      name: { type: String, required: true }, // e.g. "Roti", "Dal"
+      quantity: { type: Number, required: true },
+      unit: { type: String, required: true }, // e.g. "pieces", "grams", "ml"
+      nutrition: { type: String }, // optional nutrition info
+      protein: { type: String }    // optional protein info
+    }
+  ],
   type: {
     type: String,
     enum: ["NORMAL", "SPECIAL"],
@@ -21,9 +24,11 @@ const tiffinSchema = new mongoose.Schema({
     type: Boolean,
     required: true
   },
-  photos: [{
-    type: String // Array of S3 links 
-  }],
+  photos: [
+    {
+      type: String // Array of S3 links 
+    }
+  ],
   maximum_price: {
     type: Number,
     required: true
@@ -34,4 +39,4 @@ const tiffinSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-export default mongoose.model('Tiffin', tiffinSchema); 
+export default mongoose.model('Tiffin', tiffinSchema);

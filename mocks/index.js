@@ -70,12 +70,11 @@ const createMockData = async () => {
       await Tiffin.insertMany([
         {
           mess_id: mess._id,
-          items: {
-            quantity: 3,
-            unit: "plates",
-            nutrition: "High Fiber",
-            protein: "20g",
-          },
+          items: [
+            { name: "Roti", quantity: 4, unit: "pieces", nutrition: "Carbs", protein: "8g" },
+            { name: "Dal", quantity: 1, unit: "bowl", nutrition: "Protein Rich", protein: "12g" },
+            { name: "Rice", quantity: 1, unit: "plate", nutrition: "High Energy", protein: "5g" }
+          ],
           type: "NORMAL",
           is_veg: true,
           photos: ["https://example.com/tiffin-normal.jpg"],
@@ -83,12 +82,11 @@ const createMockData = async () => {
         },
         {
           mess_id: mess._id,
-          items: {
-            quantity: 5,
-            unit: "plates",
-            nutrition: "High Protein",
-            protein: "35g",
-          },
+          items: [
+            { name: "Paneer Butter Masala", quantity: 1, unit: "bowl", nutrition: "High Protein", protein: "20g" },
+            { name: "Naan", quantity: 2, unit: "pieces", nutrition: "Carbs", protein: "6g" },
+            { name: "Salad", quantity: 1, unit: "plate", nutrition: "Fiber Rich", protein: "3g" }
+          ],
           type: "SPECIAL",
           is_veg: false,
           photos: ["https://example.com/tiffin-special.jpg"],
@@ -96,6 +94,7 @@ const createMockData = async () => {
         },
       ]);
     }
+
 
     console.log("Created Tiffins ✅");
 
@@ -106,10 +105,19 @@ const createMockData = async () => {
       for (const type of subscriptionTypes) {
         const subs = [];
         for (let i = 1; i <= 5; i++) {
+          let slot;
+          if (i % 3 === 0) {
+            slot = "AFTERNOON+EVENING"; // every 3rd subscription
+          } else if (i % 2 === 0) {
+            slot = "EVENING";
+          } else {
+            slot = "AFTERNOON";
+          }
+
           subs.push({
             name: `${type} Plan ${i}`,
             mess_id: mess._id,
-            day_slot: i % 2 === 0 ? "EVENING" : "AFTERNOON",
+            day_slot: slot,
             price: (100 * i).toFixed(2),
             type: type,
             buffer_days: 2,
@@ -124,6 +132,7 @@ const createMockData = async () => {
         await Subscription.insertMany(subs);
       }
     }
+
 
     console.log("Created Subscriptions ✅");
     console.log("Mock data creation completed 🎉");

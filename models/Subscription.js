@@ -13,7 +13,7 @@ const subscriptionSchema = new mongoose.Schema(
     },
     day_slot: {
       type: String,
-      enum: ["EVENING", "AFTERNOON"],
+      enum: ["AFTERNOON", "EVENING", "AFTERNOON+EVENING"],
       required: true,
     },
     price: {
@@ -24,7 +24,7 @@ const subscriptionSchema = new mongoose.Schema(
         mongoose.Types.Decimal128.fromString(parseFloat(v).toFixed(2)), // fixed setter
     },
     type: {
-      type: String, 
+      type: String,
       required: true,
     },
     buffer_days: {
