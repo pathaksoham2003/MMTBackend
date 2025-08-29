@@ -19,10 +19,10 @@ router.post('/create-user', createUser);
 router.post('/verify-otp', verifyOTP);
 
 // PUT /api/users/add-name/:userId
-router.put('/add-name/:userId', addName);
+router.put('/add-name/:phone', addName);
 
 // PUT /api/users/add-address/:userId
-router.put('/add-address/:userId', addAddress);
+router.put('/add-address/:phone', addAddress);
 
 // POST /api/users/resend-otp
 router.post('/resend-otp', resendOTP);

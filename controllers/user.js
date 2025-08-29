@@ -232,7 +232,7 @@ export const verifyOTP = async (req, res) => {
       });
     }
 
-    const user = await User.find({phone});
+    const user = await User.findOne({phone});
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -241,7 +241,7 @@ export const verifyOTP = async (req, res) => {
     }
 
     // Check OTP
-    if (user.otp !== otp) {
+    if (user.otp !== parseInt(otp)) {
       return res.status(401).json({
         success: false,
         message: "Invalid OTP",
@@ -288,8 +288,7 @@ export const addName = async (req, res) => {
   try {
     const {phone} = req.params;
     const {name} = req.body;
-
-    if (!/^\d{10}$/.test(phone)) {
+    if (!/^\d{10}$/.test(parseInt(phone))) {
       return res.status(400).json({
         success: false,
         message: "Invalid phone number",
@@ -304,12 +303,12 @@ export const addName = async (req, res) => {
       });
     }
 
-    if (user.otp !== undefined) {
-      return res.status(400).json({
-        success: false,
-        message: "Please verify OTP first",
-      });
-    }
+    // if (user.otp !== undefined) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Please verify OTP first",
+    //   });
+    // }
 
     if (!name) {
       return res.status(400).json({
@@ -346,7 +345,6 @@ export const addAddress = async (req, res) => {
   try {
     const {phone} = req.params;
     const {line1, line2, instructions, tag, coordinates} = req.body;
-
     if (!/^\d{10}$/.test(phone)) {
       return res.status(400).json({
         success: false,
@@ -362,12 +360,12 @@ export const addAddress = async (req, res) => {
       });
     }
 
-    if (user.otp !== undefined) {
-      return res.status(400).json({
-        success: false,
-        message: "Please verify OTP first",
-      });
-    }
+    // if (user.otp !== undefined) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Please verify OTP first",
+    //   });
+    // }
 
     if (
       !line1 ||
