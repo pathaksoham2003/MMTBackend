@@ -70,6 +70,7 @@ const createMockData = async () => {
         mess_owner: owners[0]._id,
         mess_photos: ["https://example.com/mess1.jpg"],
         phone: randomPhone().toString(),
+        mess_name:"Mess1",
         address: {
           line1: "123 Main Street",
           line2: "Near Market",
@@ -82,6 +83,7 @@ const createMockData = async () => {
         mess_owner: owners[1]._id,
         mess_photos: ["https://example.com/mess2.jpg"],
         phone: randomPhone().toString(),
+        mess_name:"Mess2",
         address: {
           line1: "456 Side Street",
           line2: "Near Park",

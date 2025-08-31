@@ -91,28 +91,28 @@ export const getMessById = async (req, res) => {
       return res.status(404).json({ success: false, message: "Mess not found" });
     }
 
-    // Generate signed URLs for photos
-    const signedPhotos = await Promise.all(
-      mess.mess_photos.map(async (key) => {
-        try {
-          return await getSignedS3Url(key); // default expiresIn 1 hour
-        } catch (err) {
-          console.error("Error generating signed URL for photo:", key, err);
-          return null;
-        }
-      })
-    );
+    // // Generate signed URLs for photos
+    // const signedPhotos = await Promise.all(
+    //   mess.mess_photos.map(async (key) => {
+    //     try {
+    //       return await getSignedS3Url(key); // default expiresIn 1 hour
+    //     } catch (err) {
+    //       console.error("Error generating signed URL for photo:", key, err);
+    //       return null;
+    //     }
+    //   })
+    // );
 
-    // Replace mess_photos array with signed URLs
-    const messWithSignedPhotos = {
-      ...mess.toObject(),
-      mess_photos: signedPhotos.filter((url) => url !== null),
-    };
+    // // Replace mess_photos array with signed URLs
+    // const messWithSignedPhotos = {
+    //   ...mess.toObject(),
+    //   mess_photos: signedPhotos.filter((url) => url !== null),
+    // };
 
     res.status(200).json({
       success: true,
       message: "Mess details fetched successfully",
-      data: messWithSignedPhotos,
+      data: mess,
     });
   } catch (err) {
     console.error("Error fetching mess details:", err);
