@@ -31,6 +31,14 @@ const subscriptionSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    max_user_skips: {
+      type: Number,
+      required: true,
+    },
+    max_mess_skips: {
+      type: Number,
+      required: true,
+    },
     provided_tiffins: {
       type: Number,
       required: true,

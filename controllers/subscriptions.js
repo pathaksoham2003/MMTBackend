@@ -10,12 +10,14 @@ export const createSubscription = async (req, res) => {
       price,
       type,
       buffer_days,
+      max_user_skips,   // 👈 NEW
+      max_mess_skips,   // 👈 NEW
       provided_tiffins,
       time_slots,
       veg_only,
     } = req.body;
 
-    // Validation (basic required fields check)
+    // Validation
     if (
       !name ||
       !mess_id ||
@@ -23,6 +25,8 @@ export const createSubscription = async (req, res) => {
       price == null ||
       !type ||
       buffer_days == null ||
+      max_user_skips == null || // 👈 NEW
+      max_mess_skips == null || // 👈 NEW
       provided_tiffins == null ||
       !time_slots ||
       veg_only == null
@@ -39,6 +43,8 @@ export const createSubscription = async (req, res) => {
       price,
       type,
       buffer_days,
+      max_user_skips,   // 👈 NEW
+      max_mess_skips,   // 👈 NEW
       provided_tiffins,
       time_slots,
       veg_only,

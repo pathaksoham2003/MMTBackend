@@ -24,16 +24,45 @@ const createMockData = async () => {
         role: "MESS_OWNER",
         phone: randomPhone(),
         email: "owner1@example.com",
+        otp: 111111,
       },
       {
         name: "Mess Owner Two",
         role: "MESS_OWNER",
         phone: randomPhone(),
         email: "owner2@example.com",
+        otp: 111111,
       },
     ]);
 
     console.log("Created Mess Owners ✅");
+
+    // Step 1.1: Create users for other roles
+    const otherUsers = await User.insertMany([
+      {
+        name: "Test Customer",
+        role: "CUSTOMER",
+        phone: 1111111111,
+        email: "customer@example.com",
+        otp: 111111,
+      },
+      {
+        name: "Test Delivery",
+        role: "DELIVERY",
+        phone: 2222222222,
+        email: "delivery@example.com",
+        otp: 111111,
+      },
+      {
+        name: "Super Admin",
+        role: "SUPER_ADMIN",
+        phone: 3333333333,
+        email: "admin@example.com",
+        otp: 111111,
+      },
+    ]);
+
+    console.log("Created Other Users ✅");
 
     // Step 2: Register 1 mess each
     const messes = await MessDetails.insertMany([
@@ -95,7 +124,6 @@ const createMockData = async () => {
       ]);
     }
 
-
     console.log("Created Tiffins ✅");
 
     // Step 4: Create 5 subscriptions each for DAILY, WEEKLY, MONTHLY per mess
@@ -107,11 +135,48 @@ const createMockData = async () => {
         for (let i = 1; i <= 5; i++) {
           let slot;
           if (i % 3 === 0) {
-            slot = "AFTERNOON+EVENING"; // every 3rd subscription
+            slot = "AFTERNOON+EVENING";
           } else if (i % 2 === 0) {
             slot = "EVENING";
           } else {
             slot = "AFTERNOON";
+          }
+
+          // provided_tiffins logic
+          let provided_tiffins;
+          if (type === "DAILY") {
+            provided_tiffins = 1;
+          } else if (type === "WEEKLY") {
+            provided_tiffins = slot === "AFTERNOON+EVENING" ? 14 : 7;
+          } else if (type === "MONTHLY") {
+            provided_tiffins = slot === "AFTERNOON+EVENING" ? 60 : 30;
+          }
+
+          // skips + buffer logic
+          let max_user_skips = 0;
+          let max_mess_skips = 0;
+          let buffer_days = 0;
+
+          if (type === "WEEKLY") {
+            if (provided_tiffins === 7) {
+              max_user_skips = 1;
+              max_mess_skips = 1;
+              buffer_days = 1;
+            } else if (provided_tiffins === 14) {
+              max_user_skips = 2;
+              max_mess_skips = 1;
+              buffer_days = 2;
+            }
+          } else if (type === "MONTHLY") {
+            if (provided_tiffins === 30) {
+              max_user_skips = 3;
+              max_mess_skips = 2;
+              buffer_days = 3;
+            } else if (provided_tiffins === 60) {
+              max_user_skips = 5;
+              max_mess_skips = 3;
+              buffer_days = 5;
+            }
           }
 
           subs.push({
@@ -120,19 +185,25 @@ const createMockData = async () => {
             day_slot: slot,
             price: (100 * i).toFixed(2),
             type: type,
-            buffer_days: 2,
-            provided_tiffins: type === "DAILY" ? 30 : type === "WEEKLY" ? 4 : 1,
-            time_slots: [
-              { start_time: "11:00", end_time: "15:00" },
-              { start_time: "19:00", end_time: "22:00" },
-            ],
+            buffer_days,
+            max_user_skips,
+            max_mess_skips,
+            provided_tiffins,
+            time_slots:
+              slot === "AFTERNOON"
+                ? [{ start_time: "11:00", end_time: "15:00" }]
+                : slot === "EVENING"
+                  ? [{ start_time: "19:00", end_time: "22:00" }]
+                  : [
+                    { start_time: "11:00", end_time: "15:00" },
+                    { start_time: "19:00", end_time: "22:00" },
+                  ],
             veg_only: i % 2 === 0,
           });
         }
         await Subscription.insertMany(subs);
       }
     }
-
 
     console.log("Created Subscriptions ✅");
     console.log("Mock data creation completed 🎉");

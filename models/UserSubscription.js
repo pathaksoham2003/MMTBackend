@@ -11,11 +11,6 @@ const userSubscriptionSchema = new mongoose.Schema({
     ref: 'Subscription', 
     required: true 
   }, 
-  mess_id: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'MessDetails', 
-    required: true 
-  }, 
   end_date: { 
     type: Date, 
     required: true 
