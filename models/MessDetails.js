@@ -5,6 +5,10 @@ const messDetailsSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
     required: true 
+  },
+  mess_name: {
+    type:String,
+    required:true
   }, 
   mess_photos: [{ 
     type: String // Array of S3 links 
@@ -12,7 +16,8 @@ const messDetailsSchema = new mongoose.Schema({
   phone: { 
     type: String, 
     required: true 
-  }, 
+  },
+
   address: { 
     line1: { type: String, required: true }, 
     line2: String, 
