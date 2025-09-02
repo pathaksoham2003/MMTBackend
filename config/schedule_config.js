@@ -1,4 +1,41 @@
-// schedule_config.js
+import moment from "moment-timezone";
+
+/**
+ * Helper to convert IST time (HH:mm) into UTC cron fields
+ */
+function istToUtcCron(time) {
+  // Parse the IST time
+  const [hour, minute] = time.split(":").map(Number);
+
+  // Build moment in IST
+  const istMoment = moment.tz({ hour, minute }, "Asia/Kolkata");
+
+  // Convert to UTC
+  const utcMoment = istMoment.clone().tz("UTC");
+
+  return {
+    minute: utcMoment.minute().toString(),
+    hour: utcMoment.hour().toString(),
+    dayOfMonth: "*",
+    month: "*",
+    dayOfWeek: "*",
+  };
+}
+
+export default [
+  {
+    name: "MorningOrderCreation",
+    schedule: istToUtcCron("06:00"), // 6:00 AM IST
+    taskPath: "../schedulers/orderCreation.js",
+    functionName: "morningOrders",
+  },
+  {
+    name: "AfternoonOrderCreation",
+    schedule: istToUtcCron("14:00"), // 2:00 PM IST
+    taskPath: "../schedulers/orderCreation.js",
+    functionName: "afternoonOrders",
+  },
+];
 
 /**
  * Configuration file for scheduling tasks.
@@ -15,7 +52,7 @@
  * - functionName: The name of the exported function to be run.
  */
 
-export default [
+// export default [
   // {
   //   name: "TaskOne",
   //   schedule: {
@@ -53,4 +90,5 @@ export default [
   //   taskPath: "../schedulers/orderCreation.js",
   //   functionName: "taskOne",
   // },
-];
+// ];
+

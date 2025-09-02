@@ -1,5 +1,51 @@
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     MessDetails:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *         mess_owner:
+ *           type: object
+ *           properties:
+ *             _id:
+ *               type: string
+ *             name:
+ *               type: string
+ *             phone:
+ *               type: string
+ *             email:
+ *               type: string
+ *             avatar:
+ *               type: string
+ *         mess_name:
+ *           type: string
+ *         mess_photos:
+ *           type: array
+ *           items:
+ *             type: string
+ *         phone:
+ *           type: string
+ *         address:
+ *           type: object
+ *           properties:
+ *             line1: { type: string }
+ *             line2: { type: string }
+ *             city: { type: string }
+ *             state: { type: string }
+ *             pincode: { type: string }
+ *         open:
+ *           type: boolean
+ *         createdAt:
+ *           type: string
+ *         updatedAt:
+ *           type: string
+ */
+
+/**
+ * @swagger
  * /api/mess:
  *   post:
  *     summary: Create a new Mess
@@ -138,48 +184,3 @@
  *         description: Internal server error
  */
 
-/**
- * @swagger
- * components:
- *   schemas:
- *     MessDetails:
- *       type: object
- *       properties:
- *         _id:
- *           type: string
- *         mess_owner:
- *           type: object
- *           properties:
- *             _id:
- *               type: string
- *             name:
- *               type: string
- *             phone:
- *               type: string
- *             email:
- *               type: string
- *             avatar:
- *               type: string
- *         mess_name:
- *           type: string
- *         mess_photos:
- *           type: array
- *           items:
- *             type: string
- *         phone:
- *           type: string
- *         address:
- *           type: object
- *           properties:
- *             line1: { type: string }
- *             line2: { type: string }
- *             city: { type: string }
- *             state: { type: string }
- *             pincode: { type: string }
- *         open:
- *           type: boolean
- *         createdAt:
- *           type: string
- *         updatedAt:
- *           type: string
- */

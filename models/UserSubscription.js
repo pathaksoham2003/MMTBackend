@@ -81,5 +81,8 @@ userSubscriptionSchema.pre("save", async function (next) {
   next();
 });
 
+userSubscriptionSchema.index({ is_active: 1, total_tiffins_left: 1 });
+userSubscriptionSchema.index({ customer_id: 1 });
+userSubscriptionSchema.index({ plan_id: 1 });
 
 export default mongoose.model('UserSubscription', userSubscriptionSchema); 

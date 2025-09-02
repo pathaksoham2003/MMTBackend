@@ -14,6 +14,15 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
       MONGO_INITDB_DATABASE: mmt
 
+  redis:
+    image: redis:7-alpine
+    container_name: mmt-redis
+    # restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+  
   # backend:
   #   build:
   #     context: .             
