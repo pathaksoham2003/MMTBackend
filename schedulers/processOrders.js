@@ -1,7 +1,6 @@
 // schedulers/processOrders.js
 import { orderQueue } from './queue.js';
 import UserSubscription from '../models/UserSubscription.js';
-import Subscription from '../models/Subscription.js';
 import Order from '../models/Order.js';
 import MessTiffinTypeContents from '../models/MessTiffinTypeContents.js';
 
@@ -19,31 +18,43 @@ async function processOrders(job) {
   console.log(`🔄 Processing ${job.name} for slot: ${slot} at ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`);
 
   try {
-    // Build filter based on slot
+    // Determine which day_slots to include based on the processing slot
     const daySlots = slot === 'AFTERNOON_ONLY'
       ? ['AFTERNOON', 'AFTERNOON+EVENING']
       : ['EVENING', 'AFTERNOON+EVENING'];
 
-    const planIds = await Subscription.find({ day_slot: { $in: daySlots } }).distinct('_id');
-    
-    if (planIds.length === 0) {
-      console.log(`⚠️ No subscription plans found for slots: ${daySlots.join(', ')}`);
-      return { processed: 0, message: 'No plans found' };
-    }
+    // Use aggregation to filter at database level for better performance
+    const relevantSubs = await UserSubscription.aggregate([
+      {
+        $match: {
+          is_active: true,
+          total_tiffins_left: { $gt: 0 }
+        }
+      },
+      {
+        $lookup: {
+          from: 'subscriptions', // collection name for Subscription model
+          localField: 'plan_id',
+          foreignField: '_id',
+          as: 'plan_id'
+        }
+      },
+      {
+        $unwind: '$plan_id'
+      },
+      {
+        $match: {
+          'plan_id.day_slot': { $in: daySlots }
+        }
+      }
+    ]);
 
-    const filter = { 
-      is_active: true, 
-      total_tiffins_left: { $gt: 0 }, 
-      plan_id: { $in: planIds } 
-    };
-    
-    const subs = await UserSubscription.find(filter).populate('plan_id');
-    console.log(`📦 Found ${subs.length} active subscriptions to process`);
+    console.log(`📦 Found ${relevantSubs.length} active subscriptions to process for ${slot}`);
 
     let successCount = 0;
     let errorCount = 0;
 
-    await Promise.all(subs.map(async (sub) => {
+    await Promise.all(relevantSubs.map(async (sub) => {
       try {
         const messContents = await MessTiffinTypeContents.findOne({
           mess_id: sub.plan_id.mess_id,
@@ -91,6 +102,6 @@ async function processOrders(job) {
     
   } catch (error) {
     console.error(`❌ Fatal error processing ${job.name}:`, error);
-    throw error; // This will mark the job as failed
+    throw error;
   }
 }
