@@ -7,14 +7,15 @@
  *       properties:
  *         _id:
  *           type: string
- *         name:
+ *         subscription_duration:
  *           type: string
- *           example: "Monthly Veg Subscription"
+ *           enum: [WEEKLY, MONTHLY, DAILY]
+ *           example: "MONTHLY"
  *         mess_id:
  *           $ref: '#/components/schemas/MessDetails'
  *         day_slot:
  *           type: string
- *           enum: [EVENING, AFTERNOON]
+ *           enum: [AFTERNOON, EVENING, AFTERNOON+EVENING]
  *           example: "EVENING"
  *         price:
  *           type: number
@@ -26,6 +27,12 @@
  *         buffer_days:
  *           type: integer
  *           example: 2
+ *         max_user_skips:
+ *           type: integer
+ *           example: 3
+ *         max_mess_skips:
+ *           type: integer
+ *           example: 5
  *         provided_tiffins:
  *           type: integer
  *           example: 30
@@ -70,7 +77,7 @@
  *         phone:
  *           type: string
  *           example: "+91-9876543210"
-*/
+ */
 
 /**
  * @swagger
@@ -85,25 +92,28 @@
  *           schema:
  *             type: object
  *             required:
- *               - name
+ *               - subscription_duration
  *               - mess_id
  *               - day_slot
  *               - price
  *               - type
  *               - buffer_days
+ *               - max_user_skips
+ *               - max_mess_skips
  *               - provided_tiffins
  *               - time_slots
  *               - veg_only
  *             properties:
- *               name:
+ *               subscription_duration:
  *                 type: string
- *                 example: "Monthly Veg Subscription"
+ *                 enum: [WEEKLY, MONTHLY, DAILY]
+ *                 example: "MONTHLY"
  *               mess_id:
  *                 type: string
  *                 example: "64f4c3b89c6d7f001f4c2d12"
  *               day_slot:
  *                 type: string
- *                 enum: [EVENING, AFTERNOON]
+ *                 enum: [AFTERNOON, EVENING, AFTERNOON+EVENING]
  *                 example: "EVENING"
  *               price:
  *                 type: number
@@ -114,6 +124,12 @@
  *               buffer_days:
  *                 type: integer
  *                 example: 2
+ *               max_user_skips:
+ *                 type: integer
+ *                 example: 3
+ *               max_mess_skips:
+ *                 type: integer
+ *                 example: 5
  *               provided_tiffins:
  *                 type: integer
  *                 example: 30
@@ -170,7 +186,7 @@
  *         name: day_slot
  *         schema:
  *           type: string
- *           enum: [EVENING, AFTERNOON]
+ *           enum: [AFTERNOON, EVENING, AFTERNOON+EVENING]
  *           example: "EVENING"
  *       - in: query
  *         name: veg_only
@@ -183,10 +199,11 @@
  *           type: string
  *           example: "NORMAL"
  *       - in: query
- *         name: name
+ *         name: subscription_duration
  *         schema:
  *           type: string
- *           example: "Monthly Veg"
+ *           enum: [WEEKLY, MONTHLY, DAILY]
+ *           example: "WEEKLY"
  *     responses:
  *       200:
  *         description: List of subscriptions

@@ -2,9 +2,8 @@ import mongoose from "../utils/db.js";
 
 const subscriptionSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true, // fixed typo
+    subscription_duration: {
+      type: String
     },
     mess_id: {
       type: mongoose.Schema.Types.ObjectId,

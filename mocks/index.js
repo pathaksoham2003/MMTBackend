@@ -151,55 +151,87 @@ const createMockData = async () => {
     // Step 4: Subscriptions
     const allSubs = [];
     for (const mess of messes) {
-      const subscriptionTypes = ["DAILY", "WEEKLY", "MONTHLY"];
-      for (const type of subscriptionTypes) {
-        const subs = [];
-        for (let i = 1; i <= 5; i++) {
-          let slot;
-          if (i % 3 === 0) slot = "AFTERNOON+EVENING";
-          else if (i % 2 === 0) slot = "EVENING";
-          else slot = "AFTERNOON";
+      const subscriptionDurations = ["DAILY", "TRIAL", "WEEKLY", "MONTHLY"];
+      const subscriptionTypes = ["NORMAL", "SPECIAL"];
+      const daySlots = ["AFTERNOON", "EVENING", "AFTERNOON+EVENING"];
 
-          let provided_tiffins;
-          if (type === "DAILY") provided_tiffins = 1;
-          else if (type === "WEEKLY") provided_tiffins = slot === "AFTERNOON+EVENING" ? 14 : 7;
-          else if (type === "MONTHLY") provided_tiffins = slot === "AFTERNOON+EVENING" ? 60 : 30;
+      for (const duration of subscriptionDurations) {
+        for (const type of subscriptionTypes) {
+          for (const slot of daySlots) {
+            let provided_tiffins = 0;
+            let buffer_days = 0;
+            let max_user_skips = 0;
+            let max_mess_skips = 0;
 
-          let max_user_skips = 0, max_mess_skips = 0, buffer_days = 0;
-          if (type === "WEEKLY") {
-            if (provided_tiffins === 7) { max_user_skips = 1; max_mess_skips = 1; buffer_days = 1; }
-            else if (provided_tiffins === 14) { max_user_skips = 2; max_mess_skips = 1; buffer_days = 2; }
-          } else if (type === "MONTHLY") {
-            if (provided_tiffins === 30) { max_user_skips = 3; max_mess_skips = 2; buffer_days = 3; }
-            else if (provided_tiffins === 60) { max_user_skips = 5; max_mess_skips = 3; buffer_days = 5; }
+            // ✅ Logic per duration
+            if (duration === "DAILY") {
+              provided_tiffins = 1;
+              buffer_days = 2;
+              max_user_skips = 1;
+              max_mess_skips = 0;
+            } else if (duration === "TRIAL") {
+              provided_tiffins = 3;
+              buffer_days = 1;
+              max_user_skips = 1;
+              max_mess_skips = 0;
+            } else if (duration === "WEEKLY") {
+              provided_tiffins = slot === "AFTERNOON+EVENING" ? 14 : 7;
+              if (provided_tiffins === 7) {
+                max_user_skips = 1; max_mess_skips = 1; buffer_days = 1;
+              } else {
+                max_user_skips = 2; max_mess_skips = 1; buffer_days = 2;
+              }
+            } else if (duration === "MONTHLY") {
+              provided_tiffins = slot === "AFTERNOON+EVENING" ? 60 : 30;
+              if (provided_tiffins === 30) {
+                max_user_skips = 3; max_mess_skips = 2; buffer_days = 3;
+              } else {
+                max_user_skips = 5; max_mess_skips = 3; buffer_days = 5;
+              }
+            }
+
+            // time slots
+            let time_slots;
+            if (slot === "AFTERNOON") {
+              time_slots = [{ start_time: "11:00", end_time: "15:00" }];
+            } else if (slot === "EVENING") {
+              time_slots = [{ start_time: "19:00", end_time: "22:00" }];
+            } else {
+              time_slots = [
+                { start_time: "11:00", end_time: "15:00" },
+                { start_time: "19:00", end_time: "22:00" },
+              ];
+            }
+
+            // pricing logic
+            let basePrice;
+            if (duration === "DAILY") basePrice = 100;       // example
+            else if (duration === "TRIAL") basePrice = 250;  // example
+            else if (duration === "WEEKLY") basePrice = 700;
+            else basePrice = 2500; // MONTHLY
+
+            const price = slot === "AFTERNOON+EVENING" ? basePrice * 2 : basePrice;
+
+            const sub = await Subscription.create({
+              mess_id: mess._id,
+              subscription_duration: duration,
+              day_slot: slot,
+              price,
+              type, // NORMAL or SPECIAL
+              buffer_days,
+              max_user_skips,
+              max_mess_skips,
+              provided_tiffins,
+              time_slots,
+              veg_only: true,
+            });
+
+            allSubs.push(sub);
           }
-
-          subs.push({
-            name: `${type} Plan ${i}`,
-            mess_id: mess._id,
-            day_slot: slot,
-            price: (100 * i).toFixed(2),
-            type,
-            buffer_days,
-            max_user_skips,
-            max_mess_skips,
-            provided_tiffins,
-            time_slots: slot === "AFTERNOON"
-              ? [{ start_time: "11:00", end_time: "15:00" }]
-              : slot === "EVENING"
-              ? [{ start_time: "19:00", end_time: "22:00" }]
-              : [
-                  { start_time: "11:00", end_time: "15:00" },
-                  { start_time: "19:00", end_time: "22:00" },
-                ],
-            veg_only: i % 2 === 0,
-          });
         }
-        const inserted = await Subscription.insertMany(subs);
-        allSubs.push(...inserted);
       }
     }
-    console.log("Created Subscriptions ✅");
+    console.log("Created DAILY + TRIAL + WEEKLY + MONTHLY Subscriptions ✅");
 
     // Step 5: Customers with subscriptions
     const [weeklyCustomer, monthlyCustomer] = await User.insertMany([
