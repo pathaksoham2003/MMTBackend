@@ -123,3 +123,37 @@ export const getMessById = async (req, res) => {
     });
   }
 };
+
+
+export const getAllMess = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1; // default page = 1
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+    const totalMess = await MessDetails.countDocuments();
+    const totalPages = Math.ceil(totalMess / limit);
+
+    const messList = await MessDetails.find()
+      .populate("mess_owner", "name phone email avatar") // populate owner
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 }); // latest first
+
+    res.status(200).json({
+      success: true,
+      message: "Mess list fetched successfully",
+      currentPage: page,
+      totalPages,
+      nextPage: page < totalPages ? page + 1 : null,
+      data: messList,
+    });
+  } catch (err) {
+    console.error("Error fetching mess list:", err);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: err.message,
+    });
+  }
+};
