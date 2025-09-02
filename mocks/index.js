@@ -170,7 +170,7 @@ const createMockData = async () => {
               max_user_skips = 1;
               max_mess_skips = 0;
             } else if (duration === "TRIAL") {
-              provided_tiffins = 3;
+              provided_tiffins = 1;
               buffer_days = 1;
               max_user_skips = 1;
               max_mess_skips = 0;
