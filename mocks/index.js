@@ -252,8 +252,8 @@ const createMockData = async () => {
     ]);
 
     // Pick one WEEKLY and one MONTHLY subscription
-    const weeklyPlan = allSubs.find((s) => s.type === "WEEKLY");
-    const monthlyPlan = allSubs.find((s) => s.type === "MONTHLY");
+    const weeklyPlan = allSubs.find((s) => s.subscription_duration === "WEEKLY");
+    const monthlyPlan = allSubs.find((s) => s.subscription_duration === "MONTHLY");
 
     if (weeklyPlan) {
       await UserSubscription.create({

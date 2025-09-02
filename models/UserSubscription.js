@@ -63,9 +63,9 @@ userSubscriptionSchema.pre("save", async function (next) {
 
   let totalDays = 0;
 
-  if (plan.type.toLowerCase() === "weekly") {
+  if (plan.subscription_duration.toLowerCase() === "weekly") {
     totalDays = 7;
-  } else if (plan.type.toLowerCase() === "monthly") {
+  } else if (plan.subscription_duration.toLowerCase() === "monthly") {
     totalDays = 30;
   } else {
     return next(new Error("Invalid subscription type"));

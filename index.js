@@ -15,6 +15,8 @@ import userSubscriptionRoute from "./routes/userSubscription.js";
 import tiffinsRoute from "./routes/tiffin.js";
 import messTiffinTypeContentsRouter from "./routes/messTiffinTypeContents.js";
 
+import schedulerRoute from "./routes/scheduler.js";
+
 // import "./schedulers/index.js";
 
 dotenv.config();
@@ -37,35 +39,9 @@ app.use("/api/mess/", messRoute)
 app.use("/api/subscriptions", subscriptionsRoute)
 app.use("/api/usersubscription", userSubscriptionRoute);
 app.use("/api/mess-tiffin-type-content", messTiffinTypeContentsRouter);
+app.use("/api/scheduler", schedulerRoute);
 
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
-
-// Add to your index.js or create a test route
-app.get('/api/test-scheduler', async (req, res) => {
-  try {
-    const { orderQueue } = await import('./schedulers/queue.js');
-    
-    // Check queue health
-    const waiting = await orderQueue.getWaiting();
-    const active = await orderQueue.getActive();
-    const completed = await orderQueue.getCompleted();
-    const failed = await orderQueue.getFailed();
-    const repeatableJobs = await orderQueue.getRepeatableJobs();
-    
-    res.json({
-      queueStats: {
-        waiting: waiting.length,
-        active: active.length,
-        completed: completed.length,
-        failed: failed.length,
-        repeatableJobs: repeatableJobs.length
-      },
-      repeatableJobs
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 // Initialize schedulers after database connection
 mongoose.connection.once('open', () => {
