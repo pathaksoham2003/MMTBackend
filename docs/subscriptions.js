@@ -52,7 +52,25 @@
  *         updatedAt:
  *           type: string
  *           format: date-time
- */
+ *     MessDetails:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           example: "64f4c3b89c6d7f001f4c2d12"
+ *         name:
+ *           type: string
+ *           example: "ABC Mess"
+ *         address:
+ *           type: string
+ *           example: "123 Street, Mumbai"
+ *         owner:
+ *           type: string
+ *           example: "John Doe"
+ *         phone:
+ *           type: string
+ *           example: "+91-9876543210"
+*/
 
 /**
  * @swagger

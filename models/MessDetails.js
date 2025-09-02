@@ -1,30 +1,33 @@
 import mongoose from "../utils/db.js"
- 
-const messDetailsSchema = new mongoose.Schema({ 
-  mess_owner: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true 
+
+const messDetailsSchema = new mongoose.Schema({
+  mess_owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
   mess_name: {
-    type:String,
-    required:true
-  }, 
-  mess_photos: [{ 
-    type: String // Array of S3 links 
-  }], 
-  phone: { 
-    type: String, 
-    required: true 
+    type: String,
+    required: true
   },
-
-  address: { 
-    line1: { type: String, required: true }, 
-    line2: String, 
-    city: { type: String, required: true }, 
-    state: { type: String, required: true }, 
-    pincode: { type: String, required: true } 
+  mess_photos: [{
+    type: String // Array of S3 links 
+  }],
+  phone: {
+    type: String,
+    required: true
+  },
+  address: {
+    line1: { type: String, required: true },
+    line2: String,
+    city: { type: String, required: true },
+    state: { type: String, required: true },
+    pincode: { type: String, required: true }
+  },
+  open: {
+    type: Boolean,
+    default: true
   }
-}, {timestamps:true}); 
- 
+}, { timestamps: true });
+
 export default mongoose.model('MessDetails', messDetailsSchema); 

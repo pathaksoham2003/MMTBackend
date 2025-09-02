@@ -27,6 +27,12 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  payout_details: {
+    razorpay_account_id: { type: String },
+    upi_id: { type: String },   // e.g., messowner@upi
+    bank_account: { type: String },
+    ifsc: { type: String }
+  }
 }, { timestamps: true });
 
 // Index for better query performance

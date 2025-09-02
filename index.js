@@ -13,6 +13,8 @@ import subscriptionsRoute from "./routes/subscriptions.js";
 import recommendationRoute from "./routes/recommendation.js";
 import userSubscriptionRoute from "./routes/userSubscription.js";
 import tiffinsRoute from "./routes/tiffin.js";
+import messTiffinTypeContentsRouter from "./routes/messTiffinTypeContents.js";
+
 import "./schedulers/index.js";
 
 dotenv.config();
@@ -34,6 +36,7 @@ app.use("/api/tiffins/", tiffinsRoute)
 app.use("/api/mess/", messRoute)
 app.use("/api/subscriptions", subscriptionsRoute)
 app.use("/api/usersubscription", userSubscriptionRoute);
+app.use("/api/mess-tiffin-type-content", messTiffinTypeContentsRouter);
 
 // schedulers
 
