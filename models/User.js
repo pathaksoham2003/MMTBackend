@@ -32,7 +32,11 @@ const userSchema = new mongoose.Schema({
     upi_id: { type: String },   // e.g., messowner@upi
     bank_account: { type: String },
     ifsc: { type: String }
-  }
+  },
+  tried_mess: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MessDetails',
+  }]
 }, { timestamps: true });
 
 // Index for better query performance

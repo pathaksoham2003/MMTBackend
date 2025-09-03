@@ -14,6 +14,7 @@ import recommendationRoute from "./routes/recommendation.js";
 import userSubscriptionRoute from "./routes/userSubscription.js";
 import tiffinsRoute from "./routes/tiffin.js";
 import messTiffinTypeContentsRouter from "./routes/messTiffinTypeContents.js";
+import orderRoute from "./routes/order.js";
 
 import schedulerRoute from "./routes/scheduler.js";
 
@@ -40,6 +41,7 @@ app.use("/api/subscriptions", subscriptionsRoute)
 app.use("/api/usersubscription", userSubscriptionRoute);
 app.use("/api/mess-tiffin-type-content", messTiffinTypeContentsRouter);
 app.use("/api/scheduler", schedulerRoute);
+app.use("/api/orders", orderRoute);
 
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 

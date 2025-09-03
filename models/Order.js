@@ -1,30 +1,36 @@
-import mongoose from "../utils/db.js"
+import mongoose from "../utils/db.js";
 
 const orderSchema = new mongoose.Schema({
   customer_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
   },
   user_subscription_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'UserSubscription',
-    required: true
+    ref: "UserSubscription",
+    required: true,
   },
   mess_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'MessDetails',
-    required: true
+    ref: "MessDetails",
+    required: true,
   },
   mess_tiffin_contents: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'MessTiffinTypeContents',
-    required: true
+    ref: "MessTiffinTypeContents",
+    required: true,
   },
   status: {
     type: String,
-    enum: ['IN_PROCESS', 'ACCEPTED', 'NOT_ACCEPTED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'RETURNED'],
-    default: 'IN_PROCESS'
+    enum: [
+      "IN_PROCESS",
+      "OUT_FOR_DELIVERY",
+      "DELIVERED",
+      "UN_DELIVERED",
+      "RETURNED",
+    ],
+    default: "IN_PROCESS",
   },
   address: {
     line1: String,
@@ -32,24 +38,32 @@ const orderSchema = new mongoose.Schema({
     city: String,
     state: String,
     pincode: String,
-    label: String
+    label: String,
   },
   delivery_boy_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: "User",
   },
   payment: {
     payment_id: String,
     payment_status: String,
-    amount: Number
+    amount: Number,
   },
   delivered_at: {
-    type: Date
+    type: Date,
+  },
+  delivery_details: {
+    photo_url: {
+      type: String, // URL of uploaded parcel photo
+    },
+    note: {
+      type: String, // delivery note
+    },
   },
   amount: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 }, { timestamps: true });
 
-export default mongoose.model('Order', orderSchema); 
+export default mongoose.model("Order", orderSchema);
