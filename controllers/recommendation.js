@@ -13,7 +13,7 @@ export const getRecommendation = async (req, res) => {
     }
 
     const subscription = await Subscription.findOne({
-      type: subscriptionType.toUpperCase(),
+      subscription_duration: subscriptionType.toUpperCase(),
       day_slot: daySlot.toUpperCase(),
       active: true,
     }).lean();

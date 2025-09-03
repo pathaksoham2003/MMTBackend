@@ -1,0 +1,2 @@
+ - afternoon-orders: 30 19 * * * (Asia/Kolkata)
+ - morning-orders: 00 11 * * * (Asia/Kolkata)

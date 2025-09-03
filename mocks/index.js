@@ -5,6 +5,7 @@ import Tiffin from "../models/Tiffin.js";
 import Subscription from "../models/Subscription.js";
 import MessTiffinTypeContents from "../models/MessTiffinTypeContents.js";
 import UserSubscription from "../models/UserSubscription.js";
+import Order from "../models/Order.js";
 
 // Mock data helper
 const randomPhone = () => Math.floor(6000000000 + Math.random() * 1000000000);
@@ -18,6 +19,7 @@ const createMockData = async () => {
     await Subscription.deleteMany({});
     await MessTiffinTypeContents.deleteMany({});
     await UserSubscription.deleteMany({});
+    await Order.deleteMany({});
 
     console.log("Cleared old data ✅");
 
