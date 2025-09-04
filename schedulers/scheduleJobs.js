@@ -30,7 +30,7 @@ async function scheduleJobs() {
       { slot: 'EVENING_ONLY' },
       { 
         repeat: { 
-          cron: '57 21 * * *', 
+          cron: '30 19 * * *', 
           tz: 'Asia/Kolkata' 
         },
         jobId: 'afternoon-orders-job' // Unique ID to prevent duplicates

@@ -1,6 +1,5 @@
 .env
 mongo-data
-redis-data
 package-lock.json
 # Node modules
 node_modules/
@@ -64,3 +63,6 @@ dump/
 package-lock.json
 
 uploads
+
+
+redis_data
