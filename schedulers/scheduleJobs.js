@@ -13,27 +13,27 @@ async function scheduleJobs() {
 
     // Schedule morning job (6:00 AM IST) for afternoon tiffins
     await orderQueue.add(
-      'morning-orders',
+      'afternoon-orders',
       { slot: 'AFTERNOON_ONLY' },
       { 
         repeat: { 
           cron: '00 11 * * *', 
           tz: 'Asia/Kolkata' 
         },
-        jobId: 'morning-orders-job' // Unique ID to prevent duplicates
+        jobId: 'afternoon-orders-job' // Unique ID to prevent duplicates
       }
     );
 
     // Schedule afternoon job (2:26 PM IST) for evening tiffins
     await orderQueue.add(
-      'afternoon-orders',
+      'evening-orders',
       { slot: 'EVENING_ONLY' },
       { 
         repeat: { 
           cron: '30 19 * * *', 
           tz: 'Asia/Kolkata' 
         },
-        jobId: 'afternoon-orders-job' // Unique ID to prevent duplicates
+        jobId: 'evening-orders-job' // Unique ID to prevent duplicates
       }
     );
 
