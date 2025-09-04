@@ -5,11 +5,11 @@ import Order from '../models/Order.js';
 import MessTiffinTypeContents from '../models/MessTiffinTypeContents.js';
 
 // Process jobs
-orderQueue.process('morning-orders', async (job) => {
+orderQueue.process('afternoon-orders', async (job) => {
   return await processOrders(job);
 });
 
-orderQueue.process('afternoon-orders', async (job) => {
+orderQueue.process('evening-orders', async (job) => {
   return await processOrders(job);
 });
 
