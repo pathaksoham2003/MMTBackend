@@ -122,3 +122,133 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /api/usersubscription/{id}/user-skip:
+ *   post:
+ *     summary: Add a user skip for a subscription
+ *     tags: [UserSubscription]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: UserSubscription ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - date
+ *               - day_slot
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 example: "2025-09-04"
+ *               day_slot:
+ *                 type: string
+ *                 example: "EVENING"
+ *               reason:
+ *                 type: string
+ *                 example: "Going out of town"
+ *     responses:
+ *       200:
+ *         description: User skip added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User skip added successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       date:
+ *                         type: string
+ *                         format: date
+ *                       day_slot:
+ *                         type: string
+ *                       reason:
+ *                         type: string
+ *       400:
+ *         description: Missing required fields
+ *       404:
+ *         description: Subscription not found
+ *       500:
+ *         description: Server error
+ */
+
+/**
+ * @swagger
+ * /api/usersubscription/{id}/mess-skip:
+ *   post:
+ *     summary: Add mess skips for a subscription
+ *     tags: [UserSubscription]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: UserSubscription ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - date
+ *               - day_slots
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date
+ *                 example: "2025-09-05"
+ *               day_slots:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ["EVENING", "AFTERNOON"]
+ *               reason:
+ *                 type: string
+ *                 example: "Kitchen maintenance"
+ *     responses:
+ *       200:
+ *         description: Mess skips added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Mess skips added successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       date:
+ *                         type: string
+ *                         format: date
+ *                       day_slot:
+ *                         type: string
+ *                       reason:
+ *                         type: string
+ *       400:
+ *         description: Missing required fields
+ *       404:
+ *         description: Subscription not found
+ *       500:
+ *         description: Server error
+ */

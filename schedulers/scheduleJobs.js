@@ -54,5 +54,5 @@ async function scheduleJobs() {
 
 export { scheduleJobs };
 
-// Auto-run when imported
-scheduleJobs().catch(console.error);
+// // Auto-run when imported
+// scheduleJobs().catch(console.error);

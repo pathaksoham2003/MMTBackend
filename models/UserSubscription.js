@@ -31,12 +31,12 @@ const userSubscriptionSchema = new mongoose.Schema({
   },
   user_skips: [{
     date: Date,
-    slot: String,
+    day_slot: String,
     reason: String
   }],
   mess_skips: [{
     date: Date,
-    slot: String,
+    day_slot: String,
     reason: String
   }],
   delivery_failed: [{
