@@ -297,21 +297,54 @@ export const placeOrder = async (req, res) => {
   }
 };
 
-/** Mark order OUT_FOR_DELIVERY */
+/** Mark all READY orders of a mess as OUT_FOR_DELIVERY */
 export const markOrderOutForDelivery = async (req, res) => {
   try {
-    const { id } = req.params;
-    const order = await Order.findByIdAndUpdate(
-      id,
-      { status: "OUT_FOR_DELIVERY" },
-      { new: true }
+    const { messId } = req.params;
+
+    const result = await Order.updateMany(
+      { mess_id: messId, status: "READY" }, // only READY orders
+      { $set: { status: "OUT_FOR_DELIVERY" } }
     );
-    if (!order) return res.status(404).json({ message: "Order not found" });
-    res.json(order);
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "No READY orders found for this mess" });
+    }
+
+    res.status(200).json({
+      message: `Marked ${result.modifiedCount} orders as OUT_FOR_DELIVERY for mess ${messId}`,
+      updatedCount: result.modifiedCount,
+    });
   } catch (err) {
+    console.error("Error updating orders:", err);
     res.status(400).json({ message: err.message });
   }
 };
+
+// Mark all orders of a mess as READY
+export const markOrdersReadyByMess = async (req, res) => {
+  try {
+    const { messId } = req.params;
+
+    const result = await Order.updateMany(
+      { mess_id: messId, status: "IN_PROCESS" }, // only in process orders
+      { $set: { status: "READY" } }
+    );
+
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: "No IN_PROCESS orders found for this mess" });
+    }
+
+    return res.status(200).json({
+      message: `Orders for mess ${messId} marked as READY`,
+      updatedCount: result.modifiedCount,
+    });
+  } catch (error) {
+    console.error("Error marking orders ready:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 
 /**
  * Mark order DELIVERED (accepts delivery_details and optional delivered_at)

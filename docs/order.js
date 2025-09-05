@@ -199,7 +199,24 @@
  *                     description: User subscription reference
  *       500:
  *         description: Server error
-
+ * 
+ * /api/orders/{messId}/ready:
+ *   patch:
+ *     summary: Mark all orders of a mess as READY
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: messId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Mess ID whose orders should be marked as READY
+ *     responses:
+ *       200:
+ *         description: Successfully updated orders
+ *       404:
+ *         description: No orders found
+ * 
  * /api/orders/delivery/current:
  *   get:
  *     summary: Get current delivery orders for a delivery boy in a mess
@@ -274,18 +291,33 @@
  *       400: { description: Validation error }
  *       409: { description: Duplicate order for today }
  *
- * /api/orders/{id}/out-for-delivery:
+ * /api/orders/mess/{messId}/out-for-delivery:
  *   put:
- *     summary: Mark order as OUT_FOR_DELIVERY
+ *     summary: Mark all READY orders of a mess as OUT_FOR_DELIVERY
  *     tags: [Orders]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: messId
  *         required: true
- *         schema: { type: string }
+ *         schema:
+ *           type: string
+ *         description: The ID of the mess
  *     responses:
- *       200: { description: Order updated to OUT_FOR_DELIVERY }
- *       404: { description: Order not found }
+ *       200:
+ *         description: Successfully marked orders as OUT_FOR_DELIVERY
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 updatedCount:
+ *                   type: integer
+ *       404:
+ *         description: No READY orders found for this mess
+ *       400:
+ *         description: Bad request (e.g., invalid messId)
  *
  * /api/orders/{id}/delivered:
  *   put:

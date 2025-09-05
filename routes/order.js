@@ -16,6 +16,7 @@ import {
   markOrderUndelivered,
   getOrderHistory,
   getFutureOrdersOfUser,
+  markOrdersReadyByMess,
 } from "../controllers/order.js";
 
 const router = express.Router();
@@ -40,6 +41,7 @@ router.get("/user/:userId/month", getOrdersOfUserByMonth);
 
 router.post("/place", placeOrder); // DAILY/TRIAL only
 
+router.patch("/:messId/ready", markOrdersReadyByMess);
 router.put("/:id/out-for-delivery", markOrderOutForDelivery);
 router.put("/:id/delivered", markOrderDelivered);       // body: { delivery_details?, delivered_at? }
 router.put("/:id/un-delivered", markOrderUndelivered);  // body: { delivery_details? }
