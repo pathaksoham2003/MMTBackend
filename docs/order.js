@@ -156,6 +156,50 @@
  *               type: array
  *               items: { $ref: '#/components/schemas/Order' }
  *
+ * /api/orders/future/{userId}:
+ *   get:
+ *     summary: Get computed future orders of a user
+ *     description: |
+ *       Returns upcoming orders that are **computed dynamically** from the user's active subscriptions.  
+ *       These orders are **not yet stored in the DB**, but are generated based on the user's subscription plan, 
+ *       slots (AFTERNOON/EVENING), remaining tiffins, and cutoff times.
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema: { type: string }
+ *         description: The ID of the user
+ *     responses:
+ *       200:
+ *         description: Computed future orders
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   date:
+ *                     type: string
+ *                     format: date
+ *                     example: "2025-09-06"
+ *                   slot:
+ *                     type: string
+ *                     enum: [AFTERNOON, EVENING]
+ *                     example: "AFTERNOON"
+ *                   mess_id:
+ *                     type: string
+ *                     description: Mess reference
+ *                   amount:
+ *                     type: number
+ *                     example: 120
+ *                   subscription_id:
+ *                     type: string
+ *                     description: User subscription reference
+ *       500:
+ *         description: Server error
+
  * /api/orders/delivery/current:
  *   get:
  *     summary: Get current delivery orders for a delivery boy in a mess

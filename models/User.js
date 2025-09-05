@@ -7,6 +7,10 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String, // Link to S3 or image URL
   },
+  gender: {
+    type:String,
+    enum:["MALE","FEMALE","OTHER"]
+  },
   role: {
     type: String,
     enum: ["DELIVERY", "MESS_OWNER", "CUSTOMER", "SUPER_ADMIN"],

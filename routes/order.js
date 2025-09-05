@@ -15,6 +15,7 @@ import {
   markOrderDelivered,
   markOrderUndelivered,
   getOrderHistory,
+  getFutureOrdersOfUser,
 } from "../controllers/order.js";
 
 const router = express.Router();
@@ -28,6 +29,8 @@ router.delete("/:id", deleteOrder);
 
 // Business routes
 router.get("/user/:userId/today", getTodaysOrdersOfUser);
+
+router.get("/future/:userId", getFutureOrdersOfUser);
 
 router.get("/delivery/current", getCurrentDeliveryOrdersForDeliveryBoy);
 // query: ?messId=&deliveryBoyId=&page=&limit=

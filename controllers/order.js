@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Order from "../models/Order.js";
 import UserSubscription from "../models/UserSubscription.js";
+import { generateFutureOrders } from "../utils/futureOrders.js";
 
 // --------- helpers ----------
 const toInt = (v, def) => {
@@ -113,6 +114,38 @@ export const getTodaysOrdersOfUser = async (req, res) => {
       .populate("mess_id mess_tiffin_contents delivery_boy_id");
 
     res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+/** Get computed future orders of a user (not stored in DB) */
+export const getFutureOrdersOfUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const subs = await UserSubscription.find({
+      customer_id: userId,
+      is_active: true,
+      total_tiffins_left: { $gt: 0 },
+    }).populate("plan_id");
+
+    let futureOrders = [];
+    subs.forEach(sub => {
+      const subOrders = generateFutureOrders(sub);
+      futureOrders = futureOrders.concat(subOrders);
+    });
+
+    // Sort date + slot order (AFTERNOON before EVENING)
+    futureOrders.sort((a, b) => {
+      if (a.date === b.date) {
+        const slotOrder = { AFTERNOON: 1, EVENING: 2 };
+        return slotOrder[a.slot] - slotOrder[b.slot];
+      }
+      return new Date(a.date) - new Date(b.date);
+    });
+
+    res.json(futureOrders);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -287,7 +287,7 @@ export const verifyOTP = async (req, res) => {
 export const addName = async (req, res) => {
   try {
     const {phone} = req.params;
-    const {name} = req.body;
+    const {name,gender} = req.body;
     if (!/^\d{10}$/.test(parseInt(phone))) {
       return res.status(400).json({
         success: false,
@@ -318,6 +318,7 @@ export const addName = async (req, res) => {
     }
 
     user.name = name;
+    user.gender = gender;
     await user.save();
 
     res.status(200).json({

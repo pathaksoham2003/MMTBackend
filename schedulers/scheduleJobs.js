@@ -1,58 +1,57 @@
-import { orderQueue } from './queue.js';
+import { orderQueue } from "./queue.js";
+import { AFTERNOON_CUTOFF, EVENING_CUTOFF, TIMEZONE } from "../utils/timeConfig.js";
+
+function toCron(hour, minute) {
+  return `${minute} ${hour} * * *`;
+}
 
 async function scheduleJobs() {
   try {
-    // Wait for queue to be ready
     await orderQueue.isReady();
-    
-    // Clear existing repeatable jobs to avoid duplicates
+
+    // Clear existing repeatable jobs
     const repeatableJobs = await orderQueue.getRepeatableJobs();
     for (const job of repeatableJobs) {
       await orderQueue.removeRepeatableByKey(job.key);
     }
 
-    // Schedule morning job (6:00 AM IST) for afternoon tiffins
+    // Afternoon job
     await orderQueue.add(
-      'afternoon-orders',
-      { slot: 'AFTERNOON_ONLY' },
-      { 
-        repeat: { 
-          cron: '00 11 * * *', 
-          tz: 'Asia/Kolkata' 
+      "afternoon-orders",
+      { slot: "AFTERNOON_ONLY" },
+      {
+        repeat: {
+          cron: toCron(AFTERNOON_CUTOFF.hour, AFTERNOON_CUTOFF.minute),
+          tz: TIMEZONE,
         },
-        jobId: 'afternoon-orders-job' // Unique ID to prevent duplicates
+        jobId: "afternoon-orders-job",
       }
     );
 
-    // Schedule afternoon job (2:26 PM IST) for evening tiffins
+    // Evening job
     await orderQueue.add(
-      'evening-orders',
-      { slot: 'EVENING_ONLY' },
-      { 
-        repeat: { 
-          cron: '30 19 * * *', 
-          tz: 'Asia/Kolkata' 
+      "evening-orders",
+      { slot: "EVENING_ONLY" },
+      {
+        repeat: {
+          cron: toCron(EVENING_CUTOFF.hour, EVENING_CUTOFF.minute),
+          tz: TIMEZONE,
         },
-        jobId: 'evening-orders-job' // Unique ID to prevent duplicates
+        jobId: "evening-orders-job",
       }
     );
 
-    console.log('✅ Scheduled morning and afternoon repeatable jobs.');
-    
-    // Log current repeatable jobs
+    console.log("✅ Scheduled afternoon and evening repeatable jobs.");
+
     const jobs = await orderQueue.getRepeatableJobs();
-    console.log('📋 Active repeatable jobs:', jobs.length);
-    jobs.forEach(job => {
-      console.log(`  - ${job.name}: ${job.cron} (${job.tz || 'UTC'})`);
+    console.log("📋 Active repeatable jobs:", jobs.length);
+    jobs.forEach((job) => {
+      console.log(`  - ${job.name}: ${job.cron} (${job.tz || "UTC"})`);
     });
-    
   } catch (error) {
-    console.error('❌ Error scheduling jobs:', error);
+    console.error("❌ Error scheduling jobs:", error);
     throw error;
   }
 }
 
 export { scheduleJobs };
-
-// // Auto-run when imported
-// scheduleJobs().catch(console.error);
