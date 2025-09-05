@@ -11,7 +11,7 @@ const messDetailsSchema = new mongoose.Schema({
     required: true
   },
   mess_photos: [{
-    type: String // Array of S3 links 
+    type: String
   }],
   phone: {
     type: String,
@@ -24,10 +24,14 @@ const messDetailsSchema = new mongoose.Schema({
     state: { type: String, required: true },
     pincode: { type: String, required: true }
   },
+  delivery_boys: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
   open: {
     type: Boolean,
     default: true
   }
 }, { timestamps: true });
 
-export default mongoose.model('MessDetails', messDetailsSchema); 
+export default mongoose.model('MessDetails', messDetailsSchema);

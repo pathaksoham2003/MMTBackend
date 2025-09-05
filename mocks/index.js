@@ -92,6 +92,31 @@ const createMockData = async () => {
     ]);
     console.log("Created Mess Details ✅");
 
+    // Step 2.1: Add delivery boys for each mess
+    for (const mess of messes) {
+      const deliveryUsers = await User.insertMany([
+        {
+          name: `${mess.mess_name} Delivery 1`,
+          role: "DELIVERY",
+          phone: randomPhone(),
+          email: `${mess.mess_name.toLowerCase()}_delivery1@example.com`,
+          otp: 111111,
+        },
+        {
+          name: `${mess.mess_name} Delivery 2`,
+          role: "DELIVERY",
+          phone: randomPhone(),
+          email: `${mess.mess_name.toLowerCase()}_delivery2@example.com`,
+          otp: 111111,
+        },
+      ]);
+
+      // link delivery boys to mess
+      mess.delivery_boys = deliveryUsers.map(u => u._id);
+      await mess.save();
+    }
+    console.log("Created Delivery Users for each mess ✅");
+
     // Step 3: Tiffins & contents
     for (const mess of messes) {
       await Tiffin.insertMany([

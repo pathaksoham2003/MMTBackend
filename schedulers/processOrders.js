@@ -3,6 +3,7 @@ import { orderQueue } from './queue.js';
 import UserSubscription from '../models/UserSubscription.js';
 import Order from '../models/Order.js';
 import MessTiffinTypeContents from '../models/MessTiffinTypeContents.js';
+import MessDetails from '../models/MessDetails.js';
 
 // Process jobs
 orderQueue.process('afternoon-orders', async (job) => {
@@ -55,40 +56,49 @@ async function processOrders(job) {
     let errorCount = 0;
 
     await Promise.all(relevantSubs.map(async (sub) => {
-      try {
-        const messContents = await MessTiffinTypeContents.findOne({
-          mess_id: sub.plan_id.mess_id,
-          type: 'NORMAL',
-        });
-        
-        if (!messContents) {
-          console.warn(`⚠️ No mess contents found for mess_id: ${sub.plan_id.mess_id}`);
-          return;
-        }
+    try {
+      const messContents = await MessTiffinTypeContents.findOne({
+        mess_id: sub.plan_id.mess_id,
+        type: 'NORMAL',
+      });
 
-        const newOrder = new Order({
-          customer_id: sub.customer_id,
-          user_subscription_id: sub._id,
-          mess_id: sub.plan_id.mess_id,
-          mess_tiffin_contents: messContents._id,
-          address: sub.delivery_preferences?.address || {},
-          amount: sub.plan_id.price,
-        });
-        
-        await newOrder.save();
-
-        await UserSubscription.updateOne(
-          { _id: sub._id }, 
-          { $inc: { total_tiffins_left: -1 } }
-        );
-        
-        successCount++;
-        console.log(`✅ Order created for subscription ${sub._id}`);
-      } catch (err) {
-        errorCount++;
-        console.error(`❌ Error processing subscription ${sub._id}:`, err.message);
+      if (!messContents) {
+        console.warn(`⚠️ No mess contents found for mess_id: ${sub.plan_id.mess_id}`);
+        return;
       }
-    }));
+
+      // 🔑 Get mess with assigned delivery boys
+      const mess = await MessDetails.findById(sub.plan_id.mess_id).populate("delivery_boys");
+
+      if (!mess || !mess.delivery_boys.length) {
+        console.warn(`⚠️ No delivery boys assigned to mess_id: ${sub.plan_id.mess_id}`);
+        return;
+      }
+
+      const deliveryBoy = mess.delivery_boys[0];
+
+      const newOrder = new Order({
+        customer_id: sub.customer_id,
+        user_subscription_id: sub._id,
+        mess_id: sub.plan_id.mess_id,
+        mess_tiffin_contents: messContents._id,
+        address: sub.delivery_preferences?.address || {},
+        amount: sub.plan_id.price,
+        delivery_boy_id: deliveryBoy._id, 
+      });
+
+      await newOrder.save();
+
+      await UserSubscription.updateOne(
+        { _id: sub._id },
+        { $inc: { total_tiffins_left: -1 } }
+      );
+
+      console.log(`✅ Order created for subscription ${sub._id}`);
+    } catch (err) {
+      console.error(`❌ Error processing subscription ${sub._id}:`, err.message);
+    }
+  }));
 
     const result = {
       slot,
