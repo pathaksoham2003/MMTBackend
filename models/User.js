@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String, // Link to S3 or image URL
   },
+  dob: {
+    type: Date, // Date of birth
+  },
   gender: {
     type:String,
     enum:["MALE","FEMALE","OTHER"]

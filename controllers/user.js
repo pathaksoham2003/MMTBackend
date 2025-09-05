@@ -284,10 +284,12 @@ export const verifyOTP = async (req, res) => {
     });
   }
 };
+
 export const addName = async (req, res) => {
   try {
-    const {phone} = req.params;
-    const {name,gender} = req.body;
+    const { phone } = req.params;
+    const { name, gender, dob } = req.body;
+
     if (!/^\d{10}$/.test(parseInt(phone))) {
       return res.status(400).json({
         success: false,
@@ -295,7 +297,7 @@ export const addName = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({phone});
+    const user = await User.findOne({ phone });
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -319,11 +321,23 @@ export const addName = async (req, res) => {
 
     user.name = name;
     user.gender = gender;
+
+    if (dob) {
+      const parsedDob = new Date(dob);
+      if (isNaN(parsedDob.getTime())) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid date of birth format",
+        });
+      }
+      user.dob = parsedDob;
+    }
+
     await user.save();
 
     res.status(200).json({
       success: true,
-      message: "Name updated successfully",
+      message: "User details updated successfully",
       data: user.toObject({
         versionKey: false,
         transform: (_, ret) => {
@@ -333,7 +347,7 @@ export const addName = async (req, res) => {
       }),
     });
   } catch (error) {
-    console.error("Error updating name:", error);
+    console.error("Error updating user details:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error",
