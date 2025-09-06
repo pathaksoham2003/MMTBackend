@@ -146,3 +146,135 @@
  *       500:
  *         description: Internal server error
  */
+
+/**
+ * @swagger
+ * /api/users/login:
+ *   post:
+ *     summary: Login as a Mess Owner (send OTP)
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - phone
+ *             properties:
+ *               phone:
+ *                 type: string
+ *                 example: "9876543210"
+ *     responses:
+ *       200:
+ *         description: OTP sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: OTP sent successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     phone:
+ *                       type: string
+ *                       example: "9876543210"
+ *                     role:
+ *                       type: string
+ *                       example: "MESS_OWNER"
+ *                     otpSent:
+ *                       type: boolean
+ *                       example: true
+ *                     debugOtp:
+ *                       type: number
+ *                       example: 1111
+ *       400:
+ *         description: Invalid phone
+ *       403:
+ *         description: Not registered as Mess Owner
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /api/users/verify-otp:
+ *   post:
+ *     summary: Verify Mess Owner OTP and login
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - phone
+ *               - otp
+ *             properties:
+ *               phone:
+ *                 type: string
+ *                 example: "9876543210"
+ *               otp:
+ *                 type: number
+ *                 example: 1111
+ *     responses:
+ *       200:
+ *         description: OTP verified successfully, returns mess owner details with mess info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Mess user logged in successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                           example: "64d5ecb8b392a123456789ab"
+ *                         name:
+ *                           type: string
+ *                           example: "John Doe"
+ *                         phone:
+ *                           type: string
+ *                           example: "9876543210"
+ *                         role:
+ *                           type: string
+ *                           example: "MESS_OWNER"
+ *                         email:
+ *                           type: string
+ *                           example: "messowner@example.com"
+ *                         gender:
+ *                           type: string
+ *                           example: "Male"
+ *                         dob:
+ *                           type: string
+ *                           format: date
+ *                           example: "1990-01-01"
+ *                     mess:
+ *                       type: object
+ *                       description: Mess details of the owner
+ *       400:
+ *         description: Missing phone or OTP
+ *       401:
+ *         description: Invalid OTP
+ *       404:
+ *         description: Mess owner not found / mess details not found
+ *       500:
+ *         description: Internal server error
+ */
