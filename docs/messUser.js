@@ -166,7 +166,7 @@
  *                 example: 9876543210
  *     responses:
  *       200:
- *         description: OTP sent successfully (Debug mode: OTP = 1111)
+ *         description: OTP sent successfully (Debug mode: OTP = 111111)
  *       400:
  *         description: Invalid phone number
  *       403:
@@ -196,7 +196,7 @@
  *                 example: 9876543210
  *               otp:
  *                 type: number
- *                 example: 1111
+ *                 example: 111111
  *     responses:
  *       200:
  *         description: OTP verified, user logged in successfully
