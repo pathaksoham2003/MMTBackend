@@ -23,9 +23,9 @@ router.patch("/mess-owner/status/:userId", updateMessOwnerStatus);
 router.patch("/delivery/status/:userId", updateDeliveryStatus);
 
 // Step 1: Login (send OTP)
-router.post("/login", loginMessUser);
+router.post("/mess-owner/login", loginMessUser);
 
 // Step 2: Verify OTP
-router.post("/verify-otp", verifyMessUserOTP);
+router.post("/mess-owner/verify-otp", verifyMessUserOTP);
 
 export default router;
