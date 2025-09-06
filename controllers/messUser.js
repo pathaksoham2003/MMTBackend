@@ -218,7 +218,12 @@ export const verifyMessUserOTP = async (req, res) => {
       });
     }
 
-    if (user.otp !== parseInt(otp)) {
+   // normalize otp only if string
+   console.log(typeof otp)
+   console.log(user)
+    const otpToCheck = typeof otp === "string" ? parseInt(otp, 10) : otp;
+
+    if (user.otp !== otpToCheck) {
       return res.status(401).json({
         success: false,
         message: "Invalid OTP",
@@ -237,8 +242,6 @@ export const verifyMessUserOTP = async (req, res) => {
       });
     }
 
-    // cleanup OTP after successful login
-    user.otp = undefined;
     await user.save();
 
     return res.status(200).json({
